@@ -1,0 +1,16 @@
+# Maven
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# Локальные настройки БД (пароль). В репозитории только db.properties.example
+src/main/resources/db.properties
+
+# macOS
+.DS_Store
+
+# Логи
+*.log
