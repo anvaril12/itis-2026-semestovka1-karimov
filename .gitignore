@@ -6,7 +6,6 @@ target/
 *.iml
 out/
 
-# Локальные настройки БД (пароль). В репозитории только db.properties.example
 src/main/resources/db.properties
 
 # macOS
