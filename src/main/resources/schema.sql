@@ -202,6 +202,7 @@ create table room_members (
     constraint room_members_user_id_fk foreign key (user_id) references users(id) on delete cascade,
     constraint room_members_status_ch check (status in('PENDING', 'ACCEPTED', 'REJECTED'))
 );
+
 comment on table room_members is 'Таблица участников комнаты';
 comment on column room_members.room_id is 'id комнаты';
 comment on column room_members.user_id is 'id пользователей';
