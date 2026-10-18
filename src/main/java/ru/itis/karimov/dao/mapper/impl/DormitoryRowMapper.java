@@ -1,5 +1,6 @@
-package ru.itis.karimov.dao.mapper;
+package ru.itis.karimov.dao.mapper.impl;
 
+import ru.itis.karimov.dao.mapper.RowMapper;
 import ru.itis.karimov.entity.DormitoryEntity;
 
 import java.sql.ResultSet;

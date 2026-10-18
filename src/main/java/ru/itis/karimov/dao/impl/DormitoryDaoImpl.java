@@ -1,7 +1,7 @@
 package ru.itis.karimov.dao.impl;
 
 import ru.itis.karimov.dao.DormitoryDao;
-import ru.itis.karimov.dao.mapper.DormitoryRowMapper;
+import ru.itis.karimov.dao.mapper.impl.DormitoryRowMapper;
 import ru.itis.karimov.dao.mapper.RowMapper;
 import ru.itis.karimov.entity.DormitoryEntity;
 

@@ -2,7 +2,7 @@ package ru.itis.karimov.dao.impl;
 
 import ru.itis.karimov.dao.UniversityDao;
 import ru.itis.karimov.dao.mapper.RowMapper;
-import ru.itis.karimov.dao.mapper.UniversityRowMapper;
+import ru.itis.karimov.dao.mapper.impl.UniversityRowMapper;
 import ru.itis.karimov.entity.UniversityEntity;
 
 import javax.sql.DataSource;

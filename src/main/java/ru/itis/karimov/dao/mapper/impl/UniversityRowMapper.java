@@ -1,10 +1,11 @@
-package ru.itis.karimov.dao.mapper;
+package ru.itis.karimov.dao.mapper.impl;
 
+import ru.itis.karimov.dao.mapper.RowMapper;
 import ru.itis.karimov.entity.UniversityEntity;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UniversityRowMapper implements RowMapper<UniversityEntity>{
+public class UniversityRowMapper implements RowMapper<UniversityEntity> {
 
     @Override
     public UniversityEntity mapRow(ResultSet resultSet) throws SQLException {
