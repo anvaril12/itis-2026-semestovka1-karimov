@@ -59,7 +59,7 @@ public class ConfirmationCodeDaoImpl implements ConfirmationCodeDao {
                 return Optional.empty();
             }
         } catch(SQLException e) {
-            throw new RuntimeException("Не удалось найти строку с кодом:", e);
+            throw new RuntimeException("Не удалось найти код подтверждения", e);
         }
     }
 

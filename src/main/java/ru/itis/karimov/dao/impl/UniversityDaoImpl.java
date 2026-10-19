@@ -39,7 +39,7 @@ public class UniversityDaoImpl implements UniversityDao {
                 return result;
             }
         } catch(SQLException e) {
-            throw new RuntimeException("Не удалось получить список университетов:", e);
+            throw new RuntimeException("Не удалось получить список университетов", e);
         }
     }
 
@@ -55,7 +55,7 @@ public class UniversityDaoImpl implements UniversityDao {
                 return Optional.empty();
             }
         } catch(SQLException e) {
-            throw new RuntimeException("Не удалось найти университет по id:", e);
+            throw new RuntimeException("Не удалось найти университет по id: " + id, e);
         }
     }
 }

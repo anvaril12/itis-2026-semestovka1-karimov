@@ -43,7 +43,7 @@ public class QuestionDaoImpl implements QuestionDao {
                 return list;
             }
         } catch(SQLException e) {
-            throw new RuntimeException("Не удалось показать активные вопросы:", e);
+            throw new RuntimeException("Не удалось найти активные вопросы", e);
         }
     }
 
@@ -76,7 +76,7 @@ public class QuestionDaoImpl implements QuestionDao {
                 return entity;
             }
         } catch(SQLException e) {
-            throw new RuntimeException("Не удалось сохранить вопрос:", e);
+            throw new RuntimeException("Не удалось сохранить вопрос", e);
         }
     }
 
@@ -92,7 +92,7 @@ public class QuestionDaoImpl implements QuestionDao {
                 return list;
             }
         } catch(SQLException e) {
-            throw new RuntimeException("Не удалось найти все вопросы:", e);
+            throw new RuntimeException("Не удалось найти все вопросы", e);
         }
     }
 
@@ -105,7 +105,7 @@ public class QuestionDaoImpl implements QuestionDao {
             preparedStatement.setInt(3, entity.getId());
             preparedStatement.executeUpdate();
         } catch(SQLException e) {
-            throw new RuntimeException("Не удалось обновить вопрос:", e);
+            throw new RuntimeException("Не удалось обновить вопрос с id: " + entity.getId(), e);
         }
     }
 
