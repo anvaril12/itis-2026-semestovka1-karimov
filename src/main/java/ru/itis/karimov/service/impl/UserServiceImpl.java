@@ -6,10 +6,12 @@ import ru.itis.karimov.dto.RegistrationForm;
 import ru.itis.karimov.entity.UserEntity;
 import ru.itis.karimov.entity.enums.Gender;
 import ru.itis.karimov.entity.enums.Role;
+import ru.itis.karimov.exception.AuthenticationException;
 import ru.itis.karimov.exception.ValidationException;
 import ru.itis.karimov.service.UserService;
 import ru.itis.karimov.validation.RegistrationValidator;
 import java.util.Map;
+import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
 
@@ -46,5 +48,27 @@ public class UserServiceImpl implements UserService {
                    .birthYear(Integer.parseInt(form.birthYear()))
                    .build();
         return userDao.save(user);
+    }
+
+    @Override
+    public UserEntity login(String login, String password) {
+        String message = "Неверный логин или пароль";
+
+        if(login == null || login.isBlank() || password == null || password.isBlank()) {
+            throw new AuthenticationException(message);
+        }
+
+        Optional<UserEntity> optionalUser = userDao.findByLogin(login);
+
+        if(optionalUser.isEmpty()) {
+            throw new AuthenticationException(message);
+        }
+
+        UserEntity userEntity = optionalUser.get();
+
+        if(!BCrypt.checkpw(password, userEntity.getHashPassword())) {
+            throw new AuthenticationException(message);
+        }
+        return userEntity;
     }
 }

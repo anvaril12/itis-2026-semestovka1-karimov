@@ -5,4 +5,5 @@ import ru.itis.karimov.entity.UserEntity;
 
 public interface UserService {
     UserEntity register(RegistrationForm form);
+    UserEntity login(String login, String password);
 }
