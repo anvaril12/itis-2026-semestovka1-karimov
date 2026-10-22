@@ -11,8 +11,8 @@ import ru.itis.karimov.service.UserService;
 
 import java.io.IOException;
 
-@WebServlet("/register")
-public class RegistrationServlet extends HttpServlet {
+@WebServlet("/signup")
+public class SignUpServlet extends HttpServlet {
 
     private UserService userService;
 
@@ -23,7 +23,7 @@ public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/signup.jsp").forward(request, response);
     }
 
     @Override
@@ -44,11 +44,11 @@ public class RegistrationServlet extends HttpServlet {
 
         try {
             userService.register(form);
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/signin");
         } catch (ValidationException e) {
             request.setAttribute("errors", e.getError());
             request.setAttribute("form", form);
-            request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/signup.jsp").forward(request, response);
         }
     }
  }

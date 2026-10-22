@@ -10,9 +10,7 @@
 <body>
 <h1>Регистрация</h1>
 
-<%-- name каждого поля совпадает с request.getParameter(...) в RegistrationServlet.
-     value берём из form (введённое ранее), ошибку — из errors; оба через c:out против XSS --%>
-<form method="post" action="${pageContext.request.contextPath}/register">
+<form method="post" action="${pageContext.request.contextPath}/signup">
 
     <div class="field">
         <label for="login">Логин</label>
@@ -42,7 +40,6 @@
         <span class="error"><c:out value="${errors.email}"/></span>
     </div>
 
-    <%-- Пароли обратно в форму не подставляем: не возвращаем пароль в HTML-ответе --%>
     <div class="field">
         <label for="password">Пароль</label>
         <input type="password" id="password" name="password" required minlength="8" maxlength="72">
@@ -89,6 +86,6 @@
     <button type="submit">Зарегистрироваться</button>
 </form>
 
-<p>Уже есть аккаунт? <a href="${pageContext.request.contextPath}/login">Войти</a></p>
+<p>Уже есть аккаунт? <a href="${pageContext.request.contextPath}/signin">Войти</a></p>
 </body>
 </html>
