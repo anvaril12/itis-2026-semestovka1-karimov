@@ -34,7 +34,7 @@ public class SignInServlet extends HttpServlet {
             request.getSession();
             request.changeSessionId();
             request.getSession().setAttribute("user", userEntity);
-            response.sendRedirect(request.getContextPath() + "/");
+            response.sendRedirect(request.getContextPath() + "/profile");
         } catch(AuthenticationException e) {
             request.setAttribute("error", e.getMessage());
             request.setAttribute("login", login);

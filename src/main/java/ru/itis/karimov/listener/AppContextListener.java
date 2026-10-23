@@ -35,7 +35,7 @@ public class AppContextListener implements ServletContextListener {
         UniversityDao universityDao = new UniversityDaoImpl(dataSource);
         DormitoryDao dormitoryDao = new DormitoryDaoImpl(dataSource);
         UserDao userDao = new UserDaoImpl(dataSource);
-        UserService userService = new UserServiceImpl(userDao);
+        UserService userService = new UserServiceImpl(userDao, dormitoryDao);
         DormitoryService dormitoryService = new DormitoryServiceImpl(dormitoryDao, universityDao);
         ServletContext context = sce.getServletContext();
 

@@ -7,6 +7,7 @@ import ru.itis.karimov.entity.UniversityEntity;
 import ru.itis.karimov.service.DormitoryService;
 
 import java.util.List;
+import java.util.Optional;
 
 public class DormitoryServiceImpl implements DormitoryService {
     private final DormitoryDao dormitoryDao;
@@ -25,5 +26,10 @@ public class DormitoryServiceImpl implements DormitoryService {
     @Override
     public List<DormitoryEntity> getDormitoriesByUniversityId(Integer universityId) {
         return dormitoryDao.findByUniversityId(universityId);
+    }
+
+    @Override
+    public Optional<DormitoryEntity> getDormitoryById(Integer id) {
+        return dormitoryDao.findById(id);
     }
 }

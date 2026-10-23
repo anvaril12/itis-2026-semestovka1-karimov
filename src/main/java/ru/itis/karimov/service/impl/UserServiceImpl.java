@@ -1,8 +1,10 @@
 package ru.itis.karimov.service.impl;
 
 import org.mindrot.jbcrypt.BCrypt;
+import ru.itis.karimov.dao.DormitoryDao;
 import ru.itis.karimov.dao.UserDao;
 import ru.itis.karimov.dto.RegistrationForm;
+import ru.itis.karimov.entity.DormitoryEntity;
 import ru.itis.karimov.entity.UserEntity;
 import ru.itis.karimov.entity.enums.Gender;
 import ru.itis.karimov.entity.enums.Role;
@@ -17,9 +19,11 @@ public class UserServiceImpl implements UserService {
 
     private final RegistrationValidator validator = new RegistrationValidator();
     private final UserDao userDao;
+    private final DormitoryDao dormitoryDao;
 
-    public UserServiceImpl(UserDao userDao) {
+    public UserServiceImpl(UserDao userDao, DormitoryDao dormitoryDao) {
         this.userDao = userDao;
+        this.dormitoryDao = dormitoryDao;
     }
 
     @Override
@@ -71,4 +75,37 @@ public class UserServiceImpl implements UserService {
         }
         return userEntity;
     }
+
+    @Override
+    public UserEntity updateDormitory(Long userId, String dormitoryId, String universityId) {
+        int uniId;
+        int dormId;
+        try {
+            uniId = Integer.parseInt(universityId);
+            dormId = Integer.parseInt(dormitoryId);
+        } catch(NumberFormatException e) {
+            throw new ValidationException(Map.of("dormitory", "Выберите общежитие"));
+        }
+
+        Optional<DormitoryEntity> dormitoryEntity = dormitoryDao.findById(dormId);
+        if(dormitoryEntity.isEmpty()) {
+            throw new ValidationException(Map.of("dormitory", "Выберите общежитие"));
+        }
+
+        DormitoryEntity dormitory = dormitoryEntity.get();
+
+        if(uniId != dormitory.getUniversityId()) {
+            throw new ValidationException(Map.of("dormitory", "Общежитие не относится к выбранному университету"));
+        }
+
+        Optional<UserEntity> userEntity = userDao.findById(userId);
+        if(userEntity.isEmpty()) {
+            throw new IllegalStateException("Пользователь не найден");
+        }
+
+        UserEntity user = userEntity.get();
+        user.setDormitoryId(dormId);
+        userDao.update(user);
+        return user;
+     }
 }
