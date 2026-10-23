@@ -11,7 +11,9 @@ import ru.itis.karimov.dao.UserDao;
 import ru.itis.karimov.dao.impl.DormitoryDaoImpl;
 import ru.itis.karimov.dao.impl.UniversityDaoImpl;
 import ru.itis.karimov.dao.impl.UserDaoImpl;
+import ru.itis.karimov.service.DormitoryService;
 import ru.itis.karimov.service.UserService;
+import ru.itis.karimov.service.impl.DormitoryServiceImpl;
 import ru.itis.karimov.service.impl.UserServiceImpl;
 
 import java.io.IOException;
@@ -34,11 +36,11 @@ public class AppContextListener implements ServletContextListener {
         DormitoryDao dormitoryDao = new DormitoryDaoImpl(dataSource);
         UserDao userDao = new UserDaoImpl(dataSource);
         UserService userService = new UserServiceImpl(userDao);
-
+        DormitoryService dormitoryService = new DormitoryServiceImpl(dormitoryDao, universityDao);
         ServletContext context = sce.getServletContext();
-        context.setAttribute("universityDao", universityDao);
-        context.setAttribute("dormitoryDao", dormitoryDao);
+
         context.setAttribute("userService", userService);
+        context.setAttribute("dormitoryService", dormitoryService);
     }
 
     private Properties loadProperties() {
