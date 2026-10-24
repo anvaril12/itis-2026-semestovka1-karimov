@@ -27,7 +27,6 @@ public class ProfileServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("universities", dormitoryService.getAllUniversities());
 
-        // В сессии у пользователя только id общежития, а показать нужно название
         UserEntity user = (UserEntity) request.getSession().getAttribute("user");
         if (user.getDormitoryId() != null) {
             dormitoryService.getDormitoryById(user.getDormitoryId())
