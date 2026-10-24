@@ -26,6 +26,7 @@ public class UserDaoImpl implements UserDao {
             "lastname = ?, email = ?, hash_password = ?, gender = ?, contacts = ?, " +
             "role = ?, course = ?, birth_year = ?, is_blocked = ?, is_confirmed = ?, " +
             "dormitory_id = ? where id = ?";
+    private static final String SQL_FIND_BY_DORMITORY_ID = "select * from users where dormitory_id = ?";
 
     private final DataSource dataSource;
     private final RowMapper<UserEntity> entityRowMapper = new UserRowMapper();
@@ -63,6 +64,23 @@ public class UserDaoImpl implements UserDao {
             }
         } catch(SQLException e) {
             throw new RuntimeException("Не удалось найти пользователя по email: " + email, e);
+        }
+    }
+
+    @Override
+    public List<UserEntity> findByDormitoryId(Integer id) {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_DORMITORY_ID)) {
+            preparedStatement.setInt(1, id);
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                List<UserEntity> list = new ArrayList<>();
+                while(resultSet.next()) {
+                    list.add(entityRowMapper.mapRow(resultSet));
+                }
+                return list;
+            }
+        } catch(SQLException e) {
+            throw new RuntimeException("Не удалось найти пользователей по id общежития: " + id, e);
         }
     }
 

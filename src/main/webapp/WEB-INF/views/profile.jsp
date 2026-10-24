@@ -48,6 +48,8 @@
     <button type="submit">Сохранить</button>
 </form>
 
+<p><a href="${pageContext.request.contextPath}/questionnaire">Пройти анкету</a></p>
+
 <form method="post" action="${pageContext.request.contextPath}/signout">
     <button type="submit">Выйти</button>
 </form>
