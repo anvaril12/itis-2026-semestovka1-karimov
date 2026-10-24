@@ -49,6 +49,7 @@
 </form>
 
 <p><a href="${pageContext.request.contextPath}/questionnaire">Пройти анкету</a></p>
+<p><a href="${pageContext.request.contextPath}/matches">Найти соседей</a></p>
 
 <form method="post" action="${pageContext.request.contextPath}/signout">
     <button type="submit">Выйти</button>

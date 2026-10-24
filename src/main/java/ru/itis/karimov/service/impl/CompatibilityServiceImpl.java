@@ -2,12 +2,12 @@ package ru.itis.karimov.service.impl;
 
 import ru.itis.karimov.dao.UserAnswerDao;
 import ru.itis.karimov.dao.UserDao;
+import ru.itis.karimov.dto.MatchView;
 import ru.itis.karimov.entity.UserAnswerEntity;
+import ru.itis.karimov.entity.UserEntity;
 import ru.itis.karimov.service.CompatibilityService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CompatibilityServiceImpl implements CompatibilityService {
     private final UserDao userDao;
@@ -50,5 +50,37 @@ public class CompatibilityServiceImpl implements CompatibilityService {
             return null;
         }
         return (int) Math.round(sum / totalWeight * 100);
+    }
+
+    @Override
+    public List<MatchView> findMatches(UserEntity me) {
+        List<MatchView> result = new ArrayList<>();
+
+        if(me.getDormitoryId() == null) {
+            return result;
+        }
+
+        List<UserAnswerEntity> answerEntities = userAnswerDao.findByUserId(me.getId());
+        if(answerEntities.isEmpty()) {
+            return result;
+        }
+        for(UserEntity candidate : userDao.findByDormitoryId(me.getDormitoryId())) {
+            if(candidate.getId().equals(me.getId())) {
+                continue;
+            }
+            if(candidate.isBlocked()) {
+                continue;
+            }
+            if(!candidate.getGender().equals(me.getGender())) {
+                continue;
+            }
+            Integer percent = calculate(answerEntities, userAnswerDao.findByUserId(candidate.getId()));
+            if(percent == null) {
+                continue;
+            }
+            result.add(new MatchView(candidate, percent));
+        }
+        result.sort(Comparator.comparingInt(MatchView::percent).reversed());
+        return result;
     }
 }
