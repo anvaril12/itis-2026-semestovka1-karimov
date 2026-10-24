@@ -5,15 +5,13 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import org.postgresql.ds.PGSimpleDataSource;
-import ru.itis.karimov.dao.DormitoryDao;
-import ru.itis.karimov.dao.UniversityDao;
-import ru.itis.karimov.dao.UserDao;
-import ru.itis.karimov.dao.impl.DormitoryDaoImpl;
-import ru.itis.karimov.dao.impl.UniversityDaoImpl;
-import ru.itis.karimov.dao.impl.UserDaoImpl;
+import ru.itis.karimov.dao.*;
+import ru.itis.karimov.dao.impl.*;
 import ru.itis.karimov.service.DormitoryService;
+import ru.itis.karimov.service.QuestionnaireService;
 import ru.itis.karimov.service.UserService;
 import ru.itis.karimov.service.impl.DormitoryServiceImpl;
+import ru.itis.karimov.service.impl.QuestionnaireServiceImpl;
 import ru.itis.karimov.service.impl.UserServiceImpl;
 
 import java.io.IOException;
@@ -35,12 +33,19 @@ public class AppContextListener implements ServletContextListener {
         UniversityDao universityDao = new UniversityDaoImpl(dataSource);
         DormitoryDao dormitoryDao = new DormitoryDaoImpl(dataSource);
         UserDao userDao = new UserDaoImpl(dataSource);
+        QuestionDao questionDao = new QuestionDaoImpl(dataSource);
+        AnswerOptionDao answerOptionDao = new AnswerOptionDaoImpl(dataSource);
+        UserAnswerDao userAnswerDao = new UserAnswerDaoImpl(dataSource);
+
         UserService userService = new UserServiceImpl(userDao, dormitoryDao);
         DormitoryService dormitoryService = new DormitoryServiceImpl(dormitoryDao, universityDao);
+        QuestionnaireService questionnaireService = new QuestionnaireServiceImpl(questionDao, answerOptionDao, userAnswerDao);
+
         ServletContext context = sce.getServletContext();
 
         context.setAttribute("userService", userService);
         context.setAttribute("dormitoryService", dormitoryService);
+        context.setAttribute("questionnaireService", questionnaireService);
     }
 
     private Properties loadProperties() {
