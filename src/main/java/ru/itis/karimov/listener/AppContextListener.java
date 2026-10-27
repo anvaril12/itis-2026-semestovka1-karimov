@@ -7,14 +7,8 @@ import jakarta.servlet.annotation.WebListener;
 import org.postgresql.ds.PGSimpleDataSource;
 import ru.itis.karimov.dao.*;
 import ru.itis.karimov.dao.impl.*;
-import ru.itis.karimov.service.CompatibilityService;
-import ru.itis.karimov.service.DormitoryService;
-import ru.itis.karimov.service.QuestionnaireService;
-import ru.itis.karimov.service.UserService;
-import ru.itis.karimov.service.impl.CompatibilityServiceImpl;
-import ru.itis.karimov.service.impl.DormitoryServiceImpl;
-import ru.itis.karimov.service.impl.QuestionnaireServiceImpl;
-import ru.itis.karimov.service.impl.UserServiceImpl;
+import ru.itis.karimov.service.*;
+import ru.itis.karimov.service.impl.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,11 +32,13 @@ public class AppContextListener implements ServletContextListener {
         QuestionDao questionDao = new QuestionDaoImpl(dataSource);
         AnswerOptionDao answerOptionDao = new AnswerOptionDaoImpl(dataSource);
         UserAnswerDao userAnswerDao = new UserAnswerDaoImpl(dataSource);
+        RoommateRequestDao roommateRequestDao = new RoommateRequestDaoImpl(dataSource);
 
         UserService userService = new UserServiceImpl(userDao, dormitoryDao);
         DormitoryService dormitoryService = new DormitoryServiceImpl(dormitoryDao, universityDao);
         QuestionnaireService questionnaireService = new QuestionnaireServiceImpl(questionDao, answerOptionDao, userAnswerDao);
         CompatibilityService compatibilityService = new CompatibilityServiceImpl(userDao, userAnswerDao);
+        RoommateRequestService roommateRequestService = new RoommateRequestServiceImpl(userDao,roommateRequestDao);
 
         ServletContext context = sce.getServletContext();
 
@@ -50,6 +46,7 @@ public class AppContextListener implements ServletContextListener {
         context.setAttribute("dormitoryService", dormitoryService);
         context.setAttribute("questionnaireService", questionnaireService);
         context.setAttribute("compatibilityService", compatibilityService);
+        context.setAttribute("roommateRequestService", roommateRequestService);
     }
 
     private Properties loadProperties() {

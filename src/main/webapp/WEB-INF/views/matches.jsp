@@ -10,6 +10,16 @@
 <body>
 <h1>Подбор соседей</h1>
 
+<%-- flash-сообщения: показываем один раз и сразу удаляем из сессии --%>
+<c:if test="${not empty sessionScope.flashSuccess}">
+    <p class="flash success"><c:out value="${sessionScope.flashSuccess}"/></p>
+    <c:remove var="flashSuccess" scope="session"/>
+</c:if>
+<c:if test="${not empty sessionScope.flashError}">
+    <p class="flash error"><c:out value="${sessionScope.flashError}"/></p>
+    <c:remove var="flashError" scope="session"/>
+</c:if>
+
 <c:choose>
     <c:when test="${empty sessionScope.user.dormitoryId}">
         <p>Сначала выберите общежитие —
@@ -27,6 +37,11 @@
                     <c:out value="${m.user.firstName}"/> <c:out value="${m.user.lastName}"/>,
                     <c:out value="${m.user.course}"/> курс —
                     <strong><c:out value="${m.percent}"/>%</strong>
+                    <%-- POST: заявка меняет данные; получатель передаётся скрытым полем --%>
+                    <form method="post" action="${pageContext.request.contextPath}/request/send">
+                        <input type="hidden" name="receiverId" value="${m.user.id}">
+                        <button type="submit">Хочу жить вместе</button>
+                    </form>
                 </li>
             </c:forEach>
         </ul>
