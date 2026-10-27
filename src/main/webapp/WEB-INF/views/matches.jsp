@@ -10,7 +10,6 @@
 <body>
 <h1>Подбор соседей</h1>
 
-<%-- flash-сообщения: показываем один раз и сразу удаляем из сессии --%>
 <c:if test="${not empty sessionScope.flashSuccess}">
     <p class="flash success"><c:out value="${sessionScope.flashSuccess}"/></p>
     <c:remove var="flashSuccess" scope="session"/>

@@ -33,12 +33,14 @@ public class AppContextListener implements ServletContextListener {
         AnswerOptionDao answerOptionDao = new AnswerOptionDaoImpl(dataSource);
         UserAnswerDao userAnswerDao = new UserAnswerDaoImpl(dataSource);
         RoommateRequestDao roommateRequestDao = new RoommateRequestDaoImpl(dataSource);
+        RoomDao roomDao = new RoomDaoImpl(dataSource);
 
         UserService userService = new UserServiceImpl(userDao, dormitoryDao);
         DormitoryService dormitoryService = new DormitoryServiceImpl(dormitoryDao, universityDao);
         QuestionnaireService questionnaireService = new QuestionnaireServiceImpl(questionDao, answerOptionDao, userAnswerDao);
         CompatibilityService compatibilityService = new CompatibilityServiceImpl(userDao, userAnswerDao);
         RoommateRequestService roommateRequestService = new RoommateRequestServiceImpl(userDao,roommateRequestDao);
+        RoomService roomService = new RoomServiceImpl(roomDao, userDao);
 
         ServletContext context = sce.getServletContext();
 
@@ -47,6 +49,7 @@ public class AppContextListener implements ServletContextListener {
         context.setAttribute("questionnaireService", questionnaireService);
         context.setAttribute("compatibilityService", compatibilityService);
         context.setAttribute("roommateRequestService", roommateRequestService);
+        context.setAttribute("roomService", roomService);
     }
 
     private Properties loadProperties() {
