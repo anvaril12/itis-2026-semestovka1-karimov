@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import ru.itis.karimov.entity.UserEntity;
 import ru.itis.karimov.exception.ValidationException;
 import ru.itis.karimov.service.DormitoryService;
+import ru.itis.karimov.service.RoomMemberService;
 import ru.itis.karimov.service.UserService;
 
 import java.io.IOException;
@@ -16,11 +17,13 @@ import java.io.IOException;
 public class ProfileServlet extends HttpServlet {
     private DormitoryService dormitoryService;
     private UserService userService;
+    private RoomMemberService roomMemberService;
 
     @Override
     public void init() {
         dormitoryService = (DormitoryService) getServletContext().getAttribute("dormitoryService");
         userService = (UserService) getServletContext().getAttribute("userService");
+        roomMemberService = (RoomMemberService) getServletContext().getAttribute("roomMemberService");
     }
 
     @Override
@@ -32,7 +35,7 @@ public class ProfileServlet extends HttpServlet {
             dormitoryService.getDormitoryById(user.getDormitoryId())
                     .ifPresent(d -> request.setAttribute("currentDormitory", d));
         }
-
+        request.setAttribute("myApplications", roomMemberService.getMyApplications(user.getId()));
         request.getRequestDispatcher("/WEB-INF/views/profile.jsp").forward(request, response);
     }
 

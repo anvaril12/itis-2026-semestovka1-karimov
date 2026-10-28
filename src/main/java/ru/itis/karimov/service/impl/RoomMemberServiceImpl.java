@@ -4,6 +4,7 @@ import ru.itis.karimov.dao.RoomDao;
 import ru.itis.karimov.dao.RoomMemberDao;
 import ru.itis.karimov.dao.UserAnswerDao;
 import ru.itis.karimov.dao.UserDao;
+import ru.itis.karimov.dto.RoomApplicationView;
 import ru.itis.karimov.dto.RoomMemberView;
 import ru.itis.karimov.entity.RoomEntity;
 import ru.itis.karimov.entity.RoomMemberEntity;
@@ -125,6 +126,20 @@ public class RoomMemberServiceImpl implements RoomMemberService {
             throw new ValidationException(Map.of("member", "В комнате нет мест"));
         }
         roomMemberDao.updateStatus(roomId, memberId, status);
+    }
+
+    @Override
+    public List<RoomApplicationView> getMyApplications(Long userId) {
+        List<RoomMemberEntity> applications = roomMemberDao.findByUserId(userId);
+        List<RoomApplicationView> result = new ArrayList<>();
+        for(RoomMemberEntity a : applications) {
+            Optional<RoomEntity> optionalRoomEntity = roomDao.findById(a.getRoomId());
+            if(optionalRoomEntity.isEmpty()) {
+                throw new NotFoundException("Комната не найдена");
+            }
+            result.add(new RoomApplicationView(a, optionalRoomEntity.get()));
+        }
+        return result;
     }
 
     private int countAccepted(Long roomId) {

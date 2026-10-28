@@ -58,6 +58,29 @@
     <button type="submit">Сохранить</button>
 </form>
 
+<%-- вторая сторона M2M room_members: все комнаты, куда пользователь подавал заявки --%>
+<h2>Мои заявки в комнаты</h2>
+<c:choose>
+    <c:when test="${empty myApplications}">
+        <p>Вы ещё не подавали заявок. <a href="${pageContext.request.contextPath}/rooms">Посмотреть комнаты</a></p>
+    </c:when>
+    <c:otherwise>
+        <ul>
+            <c:forEach var="app" items="${myApplications}">
+                <li>
+                    <a href="${pageContext.request.contextPath}/rooms/view?id=${app.roomEntity.id}">
+                        Комната <c:out value="${app.roomEntity.roomNumber}"/></a> —
+                    <c:choose>
+                        <c:when test="${app.roomMemberEntity.status == 'PENDING'}">ждёт ответа</c:when>
+                        <c:when test="${app.roomMemberEntity.status == 'ACCEPTED'}">вы живёте здесь</c:when>
+                        <c:otherwise>отклонена</c:otherwise>
+                    </c:choose>
+                </li>
+            </c:forEach>
+        </ul>
+    </c:otherwise>
+</c:choose>
+
 <p><a href="${pageContext.request.contextPath}/questionnaire">Пройти анкету</a></p>
 <p><a href="${pageContext.request.contextPath}/matches">Найти соседей</a></p>
 <p><a href="${pageContext.request.contextPath}/requests">Мои заявки</a></p>
