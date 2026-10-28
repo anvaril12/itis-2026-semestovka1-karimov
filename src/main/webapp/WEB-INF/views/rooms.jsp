@@ -10,6 +10,16 @@
 <body>
 <h1>Комнаты в моём общежитии</h1>
 
+<%-- flash-сообщения: показываем один раз и сразу удаляем из сессии --%>
+<c:if test="${not empty sessionScope.flashSuccess}">
+    <p class="flash success"><c:out value="${sessionScope.flashSuccess}"/></p>
+    <c:remove var="flashSuccess" scope="session"/>
+</c:if>
+<c:if test="${not empty sessionScope.flashError}">
+    <p class="flash error"><c:out value="${sessionScope.flashError}"/></p>
+    <c:remove var="flashError" scope="session"/>
+</c:if>
+
 <c:choose>
     <c:when test="${empty rooms}">
         <p>Комнат пока нет. Если вы ещё не выбрали общежитие — сделайте это в

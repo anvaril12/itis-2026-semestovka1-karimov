@@ -42,6 +42,15 @@
     </form>
 </c:if>
 
+<%-- не владелец может подать заявку на вступление; повторную заявку и нехватку мест проверяет сервис --%>
+<c:if test="${sessionScope.user.id != owner.id}">
+    <form method="post" action="${pageContext.request.contextPath}/rooms/join">
+        <input type="hidden" name="roomId" value="${room.id}">
+        <button type="submit">Хочу в эту комнату</button>
+    </form>
+</c:if>
+
+<p><a href="${pageContext.request.contextPath}/rooms">Все комнаты</a></p>
 <p><a href="${pageContext.request.contextPath}/profile">Профиль</a></p>
 </body>
 </html>
