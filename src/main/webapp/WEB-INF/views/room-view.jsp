@@ -42,12 +42,60 @@
     </form>
 </c:if>
 
-<%-- не владелец может подать заявку на вступление; повторную заявку и нехватку мест проверяет сервис --%>
+<%-- жильцы видны всем: владелец + принятые участники (таблица-связка room_members) --%>
+<h2>Жильцы</h2>
+<ul>
+    <li><c:out value="${owner.firstName}"/> <c:out value="${owner.lastName}"/> (владелец)</li>
+    <c:forEach var="m" items="${members}">
+        <c:if test="${m.roomMemberEntity.status == 'ACCEPTED'}">
+            <li><c:out value="${m.user.firstName}"/> <c:out value="${m.user.lastName}"/></li>
+        </c:if>
+    </c:forEach>
+</ul>
+
+<%-- новые заявки видит только владелец; кнопки шлют POST в RoomMemberActionServlet --%>
+<c:if test="${sessionScope.user.id == owner.id}">
+    <h2>Заявки</h2>
+    <c:set var="hasPending" value="false"/>
+    <c:forEach var="m" items="${members}">
+        <c:if test="${m.roomMemberEntity.status == 'PENDING'}">
+            <c:set var="hasPending" value="true"/>
+            <p>
+                <c:out value="${m.user.firstName}"/> <c:out value="${m.user.lastName}"/>,
+                <c:out value="${m.user.course}"/> курс
+            </p>
+            <form method="post" action="${pageContext.request.contextPath}/rooms/members">
+                <input type="hidden" name="roomId" value="${room.id}">
+                <input type="hidden" name="memberId" value="${m.user.id}">
+                <button type="submit" name="action" value="accept">Принять</button>
+                <button type="submit" name="action" value="reject">Отклонить</button>
+            </form>
+        </c:if>
+    </c:forEach>
+    <c:if test="${not hasPending}">
+        <p>Новых заявок нет.</p>
+    </c:if>
+</c:if>
+
+<%-- не владелец: если уже подал заявку — показываем её статус, иначе кнопку «Хочу в эту комнату» --%>
 <c:if test="${sessionScope.user.id != owner.id}">
-    <form method="post" action="${pageContext.request.contextPath}/rooms/join">
-        <input type="hidden" name="roomId" value="${room.id}">
-        <button type="submit">Хочу в эту комнату</button>
-    </form>
+    <c:set var="myStatus" value=""/>
+    <c:forEach var="m" items="${members}">
+        <c:if test="${m.user.id == sessionScope.user.id}">
+            <c:set var="myStatus" value="${m.roomMemberEntity.status}"/>
+        </c:if>
+    </c:forEach>
+    <c:choose>
+        <c:when test="${myStatus == 'PENDING'}"><p>Ваша заявка ждёт ответа владельца.</p></c:when>
+        <c:when test="${myStatus == 'ACCEPTED'}"><p>Вы живёте в этой комнате.</p></c:when>
+        <c:when test="${myStatus == 'REJECTED'}"><p>Владелец отклонил вашу заявку.</p></c:when>
+        <c:otherwise>
+            <form method="post" action="${pageContext.request.contextPath}/rooms/join">
+                <input type="hidden" name="roomId" value="${room.id}">
+                <button type="submit">Хочу в эту комнату</button>
+            </form>
+        </c:otherwise>
+    </c:choose>
 </c:if>
 
 <p><a href="${pageContext.request.contextPath}/rooms">Все комнаты</a></p>
