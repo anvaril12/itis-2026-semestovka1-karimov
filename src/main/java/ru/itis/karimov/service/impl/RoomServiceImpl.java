@@ -45,6 +45,11 @@ public class RoomServiceImpl implements RoomService {
         if(user.getDormitoryId() == null) {
             throw new ValidationException(Map.of("room", "Сначала выберите общежитие"));
         }
+
+        if(!roomDao.findByOwnerId(ownerId).isEmpty()) {
+            throw new ValidationException(Map.of("room", "У вас уже есть комната"));
+        }
+
         RoomEntity roomEntity = RoomEntity.builder()
                 .ownerId(ownerId)
                 .dormitoryId(user.getDormitoryId())
