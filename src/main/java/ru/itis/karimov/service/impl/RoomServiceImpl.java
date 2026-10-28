@@ -11,6 +11,9 @@ import ru.itis.karimov.exception.NotFoundException;
 import ru.itis.karimov.exception.ValidationException;
 import ru.itis.karimov.service.RoomService;
 import ru.itis.karimov.validation.RoomValidator;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -99,5 +102,31 @@ public class RoomServiceImpl implements RoomService {
     public void delete(Long roomId, Long userId) {
         getOwnerRoom(roomId, userId);
         roomDao.deleteById(roomId);
+    }
+
+    @Override
+    public List<RoomView> getRoomsInMyDormitory(Long userId) {
+
+        Optional<UserEntity> optionalUserEntity = userDao.findById(userId);
+        if(optionalUserEntity.isEmpty()) {
+            throw new NotFoundException("Пользователь не найден");
+        }
+
+        UserEntity user = optionalUserEntity.get();
+        if(user.getDormitoryId() == null) {
+            return List.of();
+        }
+
+        List<RoomEntity> rooms = roomDao.findByDormitoryId(user.getDormitoryId());
+
+        List<RoomView> roomViews = new ArrayList<>();
+        for(RoomEntity room : rooms) {
+            Optional<UserEntity> optionalUserEntity1 = userDao.findById(room.getOwnerId());
+            if(optionalUserEntity1.isEmpty()) {
+                throw new NotFoundException("Владелец комнаты не найден");
+            }
+            roomViews.add(new RoomView(room, optionalUserEntity1.get()));
+        }
+        return roomViews;
     }
 }

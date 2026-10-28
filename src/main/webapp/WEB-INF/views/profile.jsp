@@ -61,6 +61,7 @@
 <p><a href="${pageContext.request.contextPath}/questionnaire">Пройти анкету</a></p>
 <p><a href="${pageContext.request.contextPath}/matches">Найти соседей</a></p>
 <p><a href="${pageContext.request.contextPath}/requests">Мои заявки</a></p>
+<p><a href="${pageContext.request.contextPath}/rooms">Комнаты в общежитии</a></p>
 <p><a href="${pageContext.request.contextPath}/rooms/create">Создать комнату</a></p>
 
 <form method="post" action="${pageContext.request.contextPath}/signout">
