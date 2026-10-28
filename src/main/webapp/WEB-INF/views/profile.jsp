@@ -10,6 +10,16 @@
 <body>
 <h1>Профиль</h1>
 
+<%-- flash-сообщения: показываем один раз и сразу удаляем из сессии --%>
+<c:if test="${not empty sessionScope.flashSuccess}">
+    <p class="flash success"><c:out value="${sessionScope.flashSuccess}"/></p>
+    <c:remove var="flashSuccess" scope="session"/>
+</c:if>
+<c:if test="${not empty sessionScope.flashError}">
+    <p class="flash error"><c:out value="${sessionScope.flashError}"/></p>
+    <c:remove var="flashError" scope="session"/>
+</c:if>
+
 <p>Логин: <c:out value="${sessionScope.user.login}"/></p>
 <p>Имя: <c:out value="${sessionScope.user.firstName}"/> <c:out value="${sessionScope.user.lastName}"/></p>
 <p>Курс: <c:out value="${sessionScope.user.course}"/></p>
@@ -50,6 +60,8 @@
 
 <p><a href="${pageContext.request.contextPath}/questionnaire">Пройти анкету</a></p>
 <p><a href="${pageContext.request.contextPath}/matches">Найти соседей</a></p>
+<p><a href="${pageContext.request.contextPath}/requests">Мои заявки</a></p>
+<p><a href="${pageContext.request.contextPath}/rooms/create">Создать комнату</a></p>
 
 <form method="post" action="${pageContext.request.contextPath}/signout">
     <button type="submit">Выйти</button>

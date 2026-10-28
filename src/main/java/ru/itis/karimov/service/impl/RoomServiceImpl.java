@@ -6,6 +6,7 @@ import ru.itis.karimov.dto.RoomForm;
 import ru.itis.karimov.dto.RoomView;
 import ru.itis.karimov.entity.RoomEntity;
 import ru.itis.karimov.entity.UserEntity;
+import ru.itis.karimov.exception.ForbiddenException;
 import ru.itis.karimov.exception.NotFoundException;
 import ru.itis.karimov.exception.ValidationException;
 import ru.itis.karimov.service.RoomService;
@@ -66,5 +67,37 @@ public class RoomServiceImpl implements RoomService {
         UserEntity user = userEntity.get();
 
         return new RoomView(room, user);
+    }
+
+    @Override
+    public RoomEntity getOwnerRoom(Long roomId, Long userId) {
+        Optional<RoomEntity> roomEntity = roomDao.findById(roomId);
+        if(roomEntity.isEmpty()) {
+            throw new NotFoundException("Не удалось найти комнату");
+        }
+        RoomEntity room = roomEntity.get();
+        if(!room.getOwnerId().equals(userId)) {
+            throw new ForbiddenException("Комната не ваша");
+        }
+        return room;
+    }
+
+    @Override
+    public void update(Long roomId, RoomForm roomForm, Long userId) {
+        Map<String, String> errors = roomValidator.validate(roomForm);
+        if(!errors.isEmpty()) {
+            throw new ValidationException(errors);
+        }
+        RoomEntity roomEntity = getOwnerRoom(roomId, userId);
+        roomEntity.setCapacity(Integer.parseInt(roomForm.capacity()));
+        roomEntity.setDescription(roomForm.description());
+        roomEntity.setRoomNumber(roomForm.roomNumber());
+        roomDao.update(roomEntity);
+    }
+
+    @Override
+    public void delete(Long roomId, Long userId) {
+        getOwnerRoom(roomId, userId);
+        roomDao.deleteById(roomId);
     }
 }

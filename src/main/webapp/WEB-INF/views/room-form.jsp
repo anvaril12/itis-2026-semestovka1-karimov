@@ -1,22 +1,28 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%-- одна форма на два режима: если сервлет передал roomId — это редактирование, иначе создание --%>
+<c:set var="isEdit" value="${not empty roomId}"/>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Новая комната</title>
+    <title>${isEdit ? 'Редактирование комнаты' : 'Новая комната'}</title>
 </head>
 <body>
-<h1>Новая комната</h1>
+<h1>${isEdit ? 'Редактирование комнаты' : 'Новая комната'}</h1>
 
 <%-- общая ошибка, не привязанная к полю (например, не выбрано общежитие) --%>
 <c:if test="${not empty errors.room}">
     <p class="flash error"><c:out value="${errors.room}"/></p>
 </c:if>
 
-<%-- novalidate не ставим: HTML5-проверки работают в браузере, а сервер всё равно проверяет сам --%>
-<form method="post" action="${pageContext.request.contextPath}/rooms/create">
+<form method="post" action="${pageContext.request.contextPath}${isEdit ? '/rooms/edit' : '/rooms/create'}">
+    <c:if test="${isEdit}">
+        <input type="hidden" name="id" value="${roomId}">
+        <input type="hidden" name="action" value="update">
+    </c:if>
+
     <p>
         <label for="roomNumber">Номер комнаты</label><br>
         <input type="text" id="roomNumber" name="roomNumber" maxlength="20" required
@@ -43,9 +49,16 @@
         </c:if>
     </p>
 
-    <button type="submit">Создать</button>
+    <button type="submit">${isEdit ? 'Сохранить' : 'Создать'}</button>
 </form>
 
-<p><a href="${pageContext.request.contextPath}/profile">Профиль</a></p>
+<c:choose>
+    <c:when test="${isEdit}">
+        <p><a href="${pageContext.request.contextPath}/rooms/view?id=${roomId}">Отмена</a></p>
+    </c:when>
+    <c:otherwise>
+        <p><a href="${pageContext.request.contextPath}/profile">Профиль</a></p>
+    </c:otherwise>
+</c:choose>
 </body>
 </html>

@@ -34,9 +34,10 @@
     <p>
         <a href="${pageContext.request.contextPath}/rooms/edit?id=${room.id}">Редактировать</a>
     </p>
-    <form method="post" action="${pageContext.request.contextPath}/rooms/delete"
+    <form method="post" action="${pageContext.request.contextPath}/rooms/edit"
           onsubmit="return confirm('Удалить комнату?');">
         <input type="hidden" name="id" value="${room.id}">
+        <input type="hidden" name="action" value="delete">
         <button type="submit">Удалить</button>
     </form>
 </c:if>

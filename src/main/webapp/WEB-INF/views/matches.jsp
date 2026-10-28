@@ -47,6 +47,7 @@
     </c:otherwise>
 </c:choose>
 
-<p><a href="${pageContext.request.contextPath}/profile">Вернуться в профиль</a></p>
+<p><a href="${pageContext.request.contextPath}/requests">Мои заявки</a> ·
+    <a href="${pageContext.request.contextPath}/profile">Вернуться в профиль</a></p>
 </body>
 </html>
