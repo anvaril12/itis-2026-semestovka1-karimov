@@ -42,7 +42,7 @@ public class AppContextListener implements ServletContextListener {
         CompatibilityService compatibilityService = new CompatibilityServiceImpl(userDao, userAnswerDao);
         RoommateRequestService roommateRequestService = new RoommateRequestServiceImpl(userDao,roommateRequestDao);
         RoomService roomService = new RoomServiceImpl(roomDao, userDao);
-        RoomMemberService roomMemberService = new RoomMemberServiceImpl(roomDao, roomMemberDao, userDao);
+        RoomMemberService roomMemberService = new RoomMemberServiceImpl(roomDao, roomMemberDao, userDao, userAnswerDao, compatibilityService);
 
         ServletContext context = sce.getServletContext();
 

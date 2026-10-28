@@ -2,30 +2,37 @@ package ru.itis.karimov.service.impl;
 
 import ru.itis.karimov.dao.RoomDao;
 import ru.itis.karimov.dao.RoomMemberDao;
+import ru.itis.karimov.dao.UserAnswerDao;
 import ru.itis.karimov.dao.UserDao;
 import ru.itis.karimov.dto.RoomMemberView;
 import ru.itis.karimov.entity.RoomEntity;
 import ru.itis.karimov.entity.RoomMemberEntity;
+import ru.itis.karimov.entity.UserAnswerEntity;
 import ru.itis.karimov.entity.UserEntity;
 import ru.itis.karimov.entity.enums.RoomMemberStatus;
 import ru.itis.karimov.exception.NotFoundException;
 import ru.itis.karimov.exception.ValidationException;
+import ru.itis.karimov.service.CompatibilityService;
 import ru.itis.karimov.service.RoomMemberService;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
 
 public class RoomMemberServiceImpl implements RoomMemberService {
 
     private final RoomDao roomDao;
     private final RoomMemberDao roomMemberDao;
     private final UserDao userDao;
+    private final UserAnswerDao userAnswerDao;
+    private final CompatibilityService compatibilityService;
 
-    public RoomMemberServiceImpl(RoomDao roomDao, RoomMemberDao roomMemberDao, UserDao userDao) {
+    public RoomMemberServiceImpl(RoomDao roomDao, RoomMemberDao roomMemberDao,
+                                 UserDao userDao, UserAnswerDao userAnswerDao,
+                                 CompatibilityService compatibilityService) {
         this.roomDao = roomDao;
         this.roomMemberDao = roomMemberDao;
         this.userDao = userDao;
+        this.userAnswerDao = userAnswerDao;
+        this.compatibilityService = compatibilityService;
     }
 
     @Override
@@ -53,14 +60,41 @@ public class RoomMemberServiceImpl implements RoomMemberService {
 
     @Override
     public List<RoomMemberView> getMembers(Long roomId) {
-        List<RoomMemberEntity> list = roomMemberDao.findByRoomId(roomId);
-        List<RoomMemberView> result = new ArrayList<>();
-        for(RoomMemberEntity roomMember : list) {
-            Optional<UserEntity> optionalUser = userDao.findById(roomMember.getUserId());
-            if (optionalUser.isEmpty()) {
+        Optional<RoomEntity> optionalRoomEntity = roomDao.findById(roomId);
+        if(optionalRoomEntity.isEmpty()) {
+            throw new NotFoundException("Комната не найдена");
+        }
+        RoomEntity roomEntity = optionalRoomEntity.get();
+
+        Optional<UserEntity> optionalUserEntity = userDao.findById(roomEntity.getOwnerId());
+        if(optionalUserEntity.isEmpty()) {
+            throw new NotFoundException("Не удалось найти владельца комнаты");
+        }
+
+        List<RoomMemberEntity> roomMemberEntityList = roomMemberDao.findByRoomId(roomId);
+        List<UserEntity> userEntities = new ArrayList<>();
+        List<UserEntity> residents = new ArrayList<>();
+        residents.add(optionalUserEntity.get());
+        for(RoomMemberEntity r : roomMemberEntityList) {
+            Optional<UserEntity> optionalUser = userDao.findById(r.getUserId());
+            if(optionalUser.isEmpty()) {
                 throw new NotFoundException("Пользователь не найден");
             }
-            result.add(new RoomMemberView(roomMember, optionalUser.get()));
+            userEntities.add(optionalUser.get());
+            if(r.getStatus() == RoomMemberStatus.ACCEPTED) {
+                residents.add(optionalUser.get());
+            }
+        }
+
+        List<RoomMemberView> result = new ArrayList<>();
+        for(int i = 0;i < roomMemberEntityList.size(); i++) {
+            RoomMemberEntity roomMember = roomMemberEntityList.get(i);
+            UserEntity user = userEntities.get(i);
+            Map<String, Integer> compatibility = Map.of();
+            if(roomMember.getStatus() == RoomMemberStatus.PENDING) {
+                compatibility = compatibilityWithResidents(user.getId(), residents);
+            }
+            result.add(new RoomMemberView(roomMember, user, compatibility));
         }
         return result;
     }
@@ -101,5 +135,15 @@ public class RoomMemberServiceImpl implements RoomMemberService {
             }
         }
         return countAccepted;
+    }
+
+    private Map<String, Integer> compatibilityWithResidents(Long candidateId, List<UserEntity> residents) {
+        List<UserAnswerEntity> candidateAnswers = userAnswerDao.findByUserId(candidateId);
+        Map<String, Integer> result = new LinkedHashMap<>();
+        for (UserEntity resident : residents) {
+            Integer percent = compatibilityService.calculate(candidateAnswers, userAnswerDao.findByUserId(resident.getId()));
+            result.put(resident.getFirstName() + " " + resident.getLastName(), percent);
+        }
+        return result;
     }
 }

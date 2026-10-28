@@ -64,6 +64,17 @@
                 <c:out value="${m.user.firstName}"/> <c:out value="${m.user.lastName}"/>,
                 <c:out value="${m.user.course}"/> курс
             </p>
+            <%-- совместимость кандидата с каждым жильцом; null — не прошёл анкету или несовпадение по принципиальному вопросу --%>
+            <ul>
+                <c:forEach var="entry" items="${m.compatibility}">
+                    <li>с <c:out value="${entry.key}"/>:
+                        <c:choose>
+                            <c:when test="${empty entry.value}">несовместимы или нет анкеты</c:when>
+                            <c:otherwise><c:out value="${entry.value}"/>%</c:otherwise>
+                        </c:choose>
+                    </li>
+                </c:forEach>
+            </ul>
             <form method="post" action="${pageContext.request.contextPath}/rooms/members">
                 <input type="hidden" name="roomId" value="${room.id}">
                 <input type="hidden" name="memberId" value="${m.user.id}">
