@@ -44,9 +44,11 @@ public class AppContextListener implements ServletContextListener {
         RoomService roomService = new RoomServiceImpl(roomDao, userDao);
         RoomMemberService roomMemberService = new RoomMemberServiceImpl(roomDao, roomMemberDao, userDao, userAnswerDao, compatibilityService);
         QuestionAdminService questionAdminService = new QuestionAdminServiceImpl(questionDao);
+        UniversityAdminService universityAdminService = new UniversityAdminServiceImpl(universityDao);
 
         ServletContext context = sce.getServletContext();
 
+        context.setAttribute("universityAdminService", universityAdminService);
         context.setAttribute("questionAdminService", questionAdminService);
         context.setAttribute("userService", userService);
         context.setAttribute("dormitoryService", dormitoryService);
