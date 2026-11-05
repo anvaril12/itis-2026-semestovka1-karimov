@@ -10,6 +10,16 @@
 <body>
 <h1>Вузы</h1>
 
+<c:if test="${not empty sessionScope.flashSuccess}">
+    <p class="success"><c:out value="${sessionScope.flashSuccess}"/></p>
+    <c:remove var="flashSuccess" scope="session"/>
+</c:if>
+
+<c:if test="${not empty sessionScope.flashError}">
+    <p class="error"><c:out value="${sessionScope.flashError}"/></p>
+    <c:remove var="flashError" scope="session"/>
+</c:if>
+
 <p>
     <a href="${pageContext.request.contextPath}/admin/universities?action=create">Добавить вуз</a>
 </p>
@@ -25,6 +35,7 @@
                 <th>ID</th>
                 <th>Название</th>
                 <th>Город</th>
+                <th>Действия</th>
             </tr>
             </thead>
             <tbody>
@@ -33,6 +44,16 @@
                     <td><c:out value="${university.id}"/></td>
                     <td><c:out value="${university.name}"/></td>
                     <td><c:out value="${university.city}"/></td>
+                    <td>
+                        <a href="${pageContext.request.contextPath}/admin/universities?action=edit&amp;id=${university.id}">
+                            Редактировать
+                        </a>
+                        <form method="post" action="${pageContext.request.contextPath}/admin/universities">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="id" value="${university.id}">
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
                 </tr>
             </c:forEach>
             </tbody>

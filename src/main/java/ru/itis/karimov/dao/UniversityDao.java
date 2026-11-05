@@ -8,4 +8,6 @@ public interface UniversityDao {
     List<UniversityEntity> findAll();
     Optional<UniversityEntity> findById(Integer id);
     UniversityEntity save(UniversityEntity university);
+    void update(UniversityEntity universityEntity);
+    void delete(UniversityEntity university);
 }

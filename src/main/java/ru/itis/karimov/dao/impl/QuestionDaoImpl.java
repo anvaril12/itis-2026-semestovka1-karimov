@@ -5,6 +5,7 @@ import ru.itis.karimov.dao.mapper.RowMapper;
 import ru.itis.karimov.dao.mapper.impl.QuestionRowMapper;
 import ru.itis.karimov.entity.AnswerOptionEntity;
 import ru.itis.karimov.entity.QuestionEntity;
+import ru.itis.karimov.entity.UniversityEntity;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -25,7 +26,6 @@ public class QuestionDaoImpl implements QuestionDao {
     private static final String SQL_UPDATE = "update questions set text = ?, is_active = ? where id = ?";
     private static final String SQL_DELETE_BY_ID = "delete from questions where id = ?";
     private static final String SQL_SAVE_OPTION = "insert into answer_options (question_id, value, label) values (?, ?, ?) returning id";
-
     private final DataSource dataSource;
     private final RowMapper<QuestionEntity> questionEntityRowMapper = new QuestionRowMapper();
 
@@ -89,7 +89,6 @@ public class QuestionDaoImpl implements QuestionDao {
             throw new RuntimeException("Не удалось сохранить вопрос с вариантами", e);
         }
     }
-
 
     @Override
     public Optional<QuestionEntity> findById(Integer id) {
@@ -163,4 +162,6 @@ public class QuestionDaoImpl implements QuestionDao {
             throw new RuntimeException("Не удалось удалить вопрос по id: " + id, e);
         }
     }
+
+
 }

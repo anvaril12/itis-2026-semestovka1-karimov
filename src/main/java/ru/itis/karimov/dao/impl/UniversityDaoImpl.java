@@ -5,6 +5,7 @@ import ru.itis.karimov.dao.mapper.RowMapper;
 import ru.itis.karimov.dao.mapper.impl.UniversityRowMapper;
 import ru.itis.karimov.entity.UniversityEntity;
 import ru.itis.karimov.exception.DuplicateException;
+import ru.itis.karimov.exception.NotFoundException;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -20,6 +21,8 @@ public class UniversityDaoImpl implements UniversityDao {
     private static final String SQL_FIND_ALL = "select id, name, city from universities order by name";
     private static final String SQL_FIND_BY_ID = "select id, name, city from universities where id = ?";
     private static final String SQL_SAVE = "insert into universities(name, city) values(?, ?) returning id";
+    private static final String SQL_UPDATE = "update universities set name = ?, city = ? where id = ?";
+    private static final String SQL_DELETE = "delete from universities where id = ?";
 
     private final DataSource dataSource;
     private final RowMapper<UniversityEntity> mapper = new UniversityRowMapper();
@@ -77,6 +80,32 @@ public class UniversityDaoImpl implements UniversityDao {
                 throw new DuplicateException("Такой ВУЗ в этом городе уже есть");
             }
             throw new RuntimeException("Не удалось сохранить университет", e);
+        }
+    }
+
+    @Override
+    public void update(UniversityEntity universityEntity) {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE)) {
+            preparedStatement.setString(1, universityEntity.getName());
+            preparedStatement.setString(2, universityEntity.getCity());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            if("23505".equals(e.getSQLState())) {
+                throw new DuplicateException("Такой ВУЗ в этом городе уже существует");
+            }
+            throw new RuntimeException("Не удалось обновить вуз c id: " + universityEntity.getId(), e);
+        }
+    }
+
+    @Override
+    public void delete(UniversityEntity university) {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE)) {
+            preparedStatement.setInt(1, university.getId());
+            preparedStatement.executeUpdate();
+        } catch(SQLException e) {
+            throw new RuntimeException("Не удалось удалить университет с id: " + university.getId(), e);
         }
     }
 }

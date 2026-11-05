@@ -2,6 +2,7 @@ package ru.itis.karimov.dao;
 
 import ru.itis.karimov.entity.AnswerOptionEntity;
 import ru.itis.karimov.entity.QuestionEntity;
+import ru.itis.karimov.entity.UniversityEntity;
 
 import java.util.List;
 

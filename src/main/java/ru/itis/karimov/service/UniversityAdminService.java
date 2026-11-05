@@ -7,4 +7,7 @@ import java.util.List;
 public interface UniversityAdminService {
     List<UniversityEntity> findAll();
     UniversityEntity save(UniversityEntity university);
+    void update(UniversityEntity university);
+    UniversityEntity findById(Integer id);
+    void delete(Integer id);
 }

@@ -5,10 +5,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Добавление вуза</title>
+    <title>
+        <c:choose>
+            <c:when test="${not empty university}">Редактирование вуза</c:when>
+            <c:otherwise>Добавление вуза</c:otherwise>
+        </c:choose>
+    </title>
 </head>
 <body>
-<h1>Добавить вуз</h1>
+<h1>
+    <c:choose>
+        <c:when test="${not empty university}">Редактировать вуз</c:when>
+        <c:otherwise>Добавить вуз</c:otherwise>
+    </c:choose>
+</h1>
 
 <c:if test="${not empty errors.university}">
     <p><c:out value="${errors.university}"/></p>
@@ -19,7 +29,15 @@
 </c:if>
 
 <form method="post" action="${pageContext.request.contextPath}/admin/universities">
-    <input type="hidden" name="action" value="create">
+    <c:choose>
+        <c:when test="${not empty university}">
+            <input type="hidden" name="action" value="update">
+            <input type="hidden" name="id" value="${university.id}">
+        </c:when>
+        <c:otherwise>
+            <input type="hidden" name="action" value="create">
+        </c:otherwise>
+    </c:choose>
 
     <p>
         <label for="name">Название</label>
