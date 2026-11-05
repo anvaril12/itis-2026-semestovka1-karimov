@@ -28,6 +28,11 @@
 <c:choose>
     <c:when test="${not empty currentDormitory}">
         <p>Сейчас: <c:out value="${currentDormitory.name}"/></p>
+        <p>
+            <a href="${pageContext.request.contextPath}/reviews?dormitoryId=${currentDormitory.id}">
+                Отзывы об общежитии
+            </a>
+        </p>
     </c:when>
     <c:otherwise>
         <p>Общежитие ещё не выбрано</p>

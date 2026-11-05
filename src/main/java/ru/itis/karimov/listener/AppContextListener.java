@@ -35,6 +35,7 @@ public class AppContextListener implements ServletContextListener {
         RoommateRequestDao roommateRequestDao = new RoommateRequestDaoImpl(dataSource);
         RoomDao roomDao = new RoomDaoImpl(dataSource);
         RoomMemberDao roomMemberDao = new RoomMemberDaoImpl(dataSource);
+        DormReviewDao dormReviewDao = new DormReviewDaoImpl(dataSource);
 
         UserService userService = new UserServiceImpl(userDao, dormitoryDao);
         DormitoryService dormitoryService = new DormitoryServiceImpl(dormitoryDao, universityDao);
@@ -46,9 +47,11 @@ public class AppContextListener implements ServletContextListener {
         QuestionAdminService questionAdminService = new QuestionAdminServiceImpl(questionDao);
         UniversityAdminService universityAdminService = new UniversityAdminServiceImpl(universityDao, dormitoryDao);
         DormitoryAdminService dormitoryAdminService = new DormitoryAdminServiceImpl(dormitoryDao, roomDao, userDao, universityDao);
+        DormReviewService dormReviewService = new DormReviewServiceImpl(dormReviewDao, dormitoryDao);
 
         ServletContext context = sce.getServletContext();
 
+        context.setAttribute("dormReviewService", dormReviewService);
         context.setAttribute("dormitoryAdminService", dormitoryAdminService);
         context.setAttribute("universityAdminService", universityAdminService);
         context.setAttribute("questionAdminService", questionAdminService);
