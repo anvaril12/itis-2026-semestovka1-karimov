@@ -79,7 +79,7 @@ public class QuestionAdminServlet extends HttpServlet {
             } else if ("delete".equals(action)) {
                 int idQuestion = Integer.parseInt(id);
                 questionAdminService.delete(idQuestion);
-                session.setAttribute("flashSuccess", "Вопрос успешно удален!");
+                session.setAttribute("flashSuccess", "Вопрос успешно отключен!");
             } else if ("activate".equals(action)) {
                 int idQuestion = Integer.parseInt(id);
                 questionAdminService.activate(idQuestion);
@@ -93,11 +93,25 @@ public class QuestionAdminServlet extends HttpServlet {
             }
         } catch (ValidationException e) {
             request.setAttribute("errors", e.getError());
-            request.setAttribute("text", text);
+            request.setAttribute("text", text == null ? "" : text);
+
+            if("update".equals(action)) {
+                try {
+                    Integer idQuestion = Integer.parseInt(id);
+                    QuestionEntity questionEntity = questionAdminService.findById(idQuestion);
+                    request.setAttribute("question", questionEntity);
+                } catch (NumberFormatException | NotFoundException exception) {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    return;
+                }
+            }
             request.getRequestDispatcher("/WEB-INF/views/admin/question-form.jsp").forward(request, response);
             return;
+        } catch (NotFoundException e) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
         } catch (NumberFormatException e) {
-            response.sendError((HttpServletResponse.SC_BAD_REQUEST));
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         response.sendRedirect(request.getContextPath() + "/admin/questions");

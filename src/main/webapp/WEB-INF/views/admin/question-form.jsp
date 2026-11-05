@@ -40,38 +40,38 @@
 
     <div class="field">
         <label for="text">Текст вопроса</label>
-        <textarea id="text" name="text" rows="4" cols="60" required><c:choose>
-            <c:when test="${not empty question}">
-                <c:out value="${question.text}"/>
-            </c:when>
-            <c:otherwise>
-                <c:out value="${text}"/>
-            </c:otherwise>
-        </c:choose></textarea>
+        <textarea id="text" name="text" rows="4" cols="60" required><c:out value="${requestScope.text != null ? requestScope.text : question.text}"/></textarea>
     </div>
 
-    <h2>Варианты ответа</h2>
-    <p>Заполни минимум два варианта. Пустые строки будут пропущены.</p>
+    <c:if test="${empty question}">
+        <h2>Варианты ответа</h2>
+        <p>Заполни минимум два варианта. Пустые строки будут пропущены.</p>
 
-    <c:forEach begin="0" end="4" var="i">
-        <div class="field">
-            <label for="optionValue${i}">Значение варианта ${i + 1}</label>
-            <input type="number"
-                   id="optionValue${i}"
-                   name="optionValues"
-                   min="1"
-                   max="5"
-                   value="<c:out value='${paramValues.optionValues[i]}'/>"
-            >
+        <c:if test="${not empty errors.options}">
+            <p class="error">
+                <c:out value="${errors.options}"/>
+            </p>
+        </c:if>
 
-            <label for="optionLabel${i}">Текст варианта ${i + 1}</label>
-            <input type="text"
-                   id="optionLabel${i}"
-                   name="optionLabels"
-                   maxlength="100"
-                   value="<c:out value='${paramValues.optionLabels[i]}'/>">
-        </div>
-    </c:forEach>
+        <c:forEach begin="0" end="4" var="i">
+            <div class="field">
+                <label for="optionValue${i}">Значение варианта ${i + 1}</label>
+                <input type="number"
+                       id="optionValue${i}"
+                       name="optionValues"
+                       min="1"
+                       max="5"
+                       value="<c:out value='${paramValues.optionValues[i]}'/>">
+
+                <label for="optionLabel${i}">Текст варианта ${i + 1}</label>
+                <input type="text"
+                       id="optionLabel${i}"
+                       name="optionLabels"
+                       maxlength="100"
+                       value="<c:out value='${paramValues.optionLabels[i]}'/>">
+            </div>
+        </c:forEach>
+    </c:if>
 
     <c:choose>
         <c:when test="${not empty question}">

@@ -10,6 +10,20 @@
 <body>
 <h1>Вопросы анкеты</h1>
 
+<c:if test="${not empty sessionScope.flashSuccess}">
+    <p class="success">
+        <c:out value="${sessionScope.flashSuccess}"/>
+    </p>
+    <c:remove var="flashSuccess" scope="session"/>
+</c:if>
+
+<c:if test="${not empty sessionScope.flashError}">
+    <p class="error">
+        <c:out value="${sessionScope.flashError}"/>
+    </p>
+    <c:remove var="flashError" scope="session"/>
+</c:if>
+
 <p>
     <a href="${pageContext.request.contextPath}/admin/questions?action=create">
         Добавить вопрос
