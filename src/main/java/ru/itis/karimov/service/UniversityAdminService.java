@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface UniversityAdminService {
     List<UniversityEntity> findAll();
+    UniversityEntity save(UniversityEntity university);
 }

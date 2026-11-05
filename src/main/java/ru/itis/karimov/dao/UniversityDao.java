@@ -7,4 +7,5 @@ import java.util.Optional;
 public interface UniversityDao {
     List<UniversityEntity> findAll();
     Optional<UniversityEntity> findById(Integer id);
+    UniversityEntity save(UniversityEntity university);
 }

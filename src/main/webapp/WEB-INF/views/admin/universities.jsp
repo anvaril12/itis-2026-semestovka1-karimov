@@ -10,6 +10,10 @@
 <body>
 <h1>Вузы</h1>
 
+<p>
+    <a href="${pageContext.request.contextPath}/admin/universities?action=create">Добавить вуз</a>
+</p>
+
 <c:choose>
     <c:when test="${empty universities}">
         <p>Вузов пока нет.</p>

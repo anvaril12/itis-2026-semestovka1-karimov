@@ -18,6 +18,7 @@ public class UniversityDaoImpl implements UniversityDao {
 
     private static final String SQL_FIND_ALL = "select id, name, city from universities order by name";
     private static final String SQL_FIND_BY_ID = "select id, name, city from universities where id = ?";
+    private static final String SQL_SAVE = "insert into universities(name, city) values(?, ?) returning id";
 
     private final DataSource dataSource;
     private final RowMapper<UniversityEntity> mapper = new UniversityRowMapper();
@@ -56,6 +57,22 @@ public class UniversityDaoImpl implements UniversityDao {
             }
         } catch(SQLException e) {
             throw new RuntimeException("Не удалось найти университет по id: " + id, e);
+        }
+    }
+
+    @Override
+    public UniversityEntity save(UniversityEntity university) {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_SAVE)) {
+            preparedStatement.setString(1, university.getName());
+            preparedStatement.setString(2, university.getCity());
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                resultSet.next();
+                university.setId(resultSet.getInt("id"));
+                return university;
+            }
+        } catch(SQLException e) {
+            throw new RuntimeException("Не удалось сохранить университет:", e);
         }
     }
 }
