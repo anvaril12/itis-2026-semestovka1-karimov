@@ -39,7 +39,7 @@
                     <td><c:out value="${review.dormitoryId}"/></td>
                     <td><c:out value="${review.rating}"/>/5</td>
                     <td><c:out value="${review.text}"/></td>
-                    <td><c:out value="${review.createdAt}"/></td>
+                    <td><c:out value="${review.formattedCreatedAt}"/></td>
                     <td>
                         <form method="post" action="${pageContext.request.contextPath}/admin/reviews">
                             <input type="hidden" name="id" value="${review.id}">
