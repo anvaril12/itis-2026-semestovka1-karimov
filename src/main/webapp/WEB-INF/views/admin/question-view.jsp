@@ -26,13 +26,26 @@
     </a>
 </p>
 
-<form method="post"
-      action="${pageContext.request.contextPath}/admin/questions"
-      onsubmit="return confirm('Отключить этот вопрос?');">
-    <input type="hidden" name="action" value="delete">
-    <input type="hidden" name="id" value="${question.id}">
-    <button type="submit">Отключить</button>
-</form>
+<c:choose>
+    <c:when test="${question.active}">
+        <form method="post"
+              action="${pageContext.request.contextPath}/admin/questions"
+              onsubmit="return confirm('Отключить этот вопрос?');">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="${question.id}">
+            <button type="submit">Отключить</button>
+        </form>
+    </c:when>
+
+    <c:otherwise>
+        <form method="post"
+              action="${pageContext.request.contextPath}/admin/questions">
+            <input type="hidden" name="action" value="activate">
+            <input type="hidden" name="id" value="${question.id}">
+            <button type="submit">Активировать</button>
+        </form>
+    </c:otherwise>
+</c:choose>
 
 <p>
     <a href="${pageContext.request.contextPath}/admin/questions">

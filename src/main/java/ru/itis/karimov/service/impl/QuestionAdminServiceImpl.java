@@ -133,4 +133,11 @@ public class QuestionAdminServiceImpl implements QuestionAdminService {
         questionEntity.setActive(false);
         questionDao.update(questionEntity);
     }
+
+    @Override
+    public void activate(Integer id) {
+        QuestionEntity questionEntity = findById(id);
+        questionEntity.setActive(true);
+        questionDao.update(questionEntity);
+    }
 }

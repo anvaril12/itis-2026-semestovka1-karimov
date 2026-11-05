@@ -10,4 +10,5 @@ public interface QuestionAdminService {
     QuestionEntity create(String text, String[] optionValues, String[] optionLabels);
     void update(Integer id, String text);
     void delete(Integer id);
+    void activate(Integer id);
 }

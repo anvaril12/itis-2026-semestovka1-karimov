@@ -27,11 +27,21 @@ public class QuestionAdminServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
+        if("edit".equals(action)) {
+            try {
+                Integer id = Integer.parseInt(request.getParameter("id"));
+                QuestionEntity questionEntity = questionAdminService.findById(id);
+                request.setAttribute("question", questionEntity);
+                request.getRequestDispatcher("/WEB-INF/views/admin/question-form.jsp").forward(request, response);
+                return;
+            } catch(NumberFormatException | NotFoundException e) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+        }
 
         if ("create".equals(action)) {
-            request.getRequestDispatcher(
-                    "/WEB-INF/views/admin/question-form.jsp"
-            ).forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/admin/question-form.jsp").forward(request, response);
             return;
         }
 
@@ -70,6 +80,10 @@ public class QuestionAdminServlet extends HttpServlet {
                 int idQuestion = Integer.parseInt(id);
                 questionAdminService.delete(idQuestion);
                 session.setAttribute("flashSuccess", "Вопрос успешно удален!");
+            } else if ("activate".equals(action)) {
+                int idQuestion = Integer.parseInt(id);
+                questionAdminService.activate(idQuestion);
+                session.setAttribute("flashSuccess", "Вопрос успешно активирован");
             } else if("update".equals(action)) {
                 int idQuestion = Integer.parseInt(id);
                 questionAdminService.update(idQuestion, text);

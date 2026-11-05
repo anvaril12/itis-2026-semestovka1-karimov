@@ -5,10 +5,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Добавить вопрос</title>
+    <title>
+        <c:choose>
+            <c:when test="${not empty question}">Изменить вопрос</c:when>
+            <c:otherwise>Добавить вопрос</c:otherwise>
+        </c:choose>
+    </title>
 </head>
 <body>
-<h1>Добавить вопрос</h1>
+<h1>
+    <c:choose>
+        <c:when test="${not empty question}">Изменить вопрос</c:when>
+        <c:otherwise>Добавить вопрос</c:otherwise>
+    </c:choose>
+</h1>
 
 <c:if test="${not empty errors.text}">
     <p class="error">
@@ -18,11 +28,26 @@
 
 <form method="post"
       action="${pageContext.request.contextPath}/admin/questions">
-    <input type="hidden" name="action" value="create">
+    <c:choose>
+        <c:when test="${not empty question}">
+            <input type="hidden" name="action" value="update">
+            <input type="hidden" name="id" value="${question.id}">
+        </c:when>
+        <c:otherwise>
+            <input type="hidden" name="action" value="create">
+        </c:otherwise>
+    </c:choose>
 
     <div class="field">
         <label for="text">Текст вопроса</label>
-        <textarea id="text" name="text" rows="4" cols="60" required><c:out value="${text}"/></textarea>
+        <textarea id="text" name="text" rows="4" cols="60" required><c:choose>
+            <c:when test="${not empty question}">
+                <c:out value="${question.text}"/>
+            </c:when>
+            <c:otherwise>
+                <c:out value="${text}"/>
+            </c:otherwise>
+        </c:choose></textarea>
     </div>
 
     <h2>Варианты ответа</h2>
@@ -36,7 +61,8 @@
                    name="optionValues"
                    min="1"
                    max="5"
-                   value="${paramValues.optionValues[i]}">
+                   value="<c:out value='${paramValues.optionValues[i]}'/>"
+            >
 
             <label for="optionLabel${i}">Текст варианта ${i + 1}</label>
             <input type="text"
@@ -47,7 +73,14 @@
         </div>
     </c:forEach>
 
-    <button type="submit">Создать</button>
+    <c:choose>
+        <c:when test="${not empty question}">
+            <button type="submit">Сохранить изменения</button>
+        </c:when>
+        <c:otherwise>
+            <button type="submit">Создать</button>
+        </c:otherwise>
+    </c:choose>
 </form>
 
 <p>
