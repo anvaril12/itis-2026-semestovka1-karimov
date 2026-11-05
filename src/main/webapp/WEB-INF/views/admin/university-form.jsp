@@ -14,6 +14,10 @@
     <p><c:out value="${errors.university}"/></p>
 </c:if>
 
+<c:if test="${not empty duplicateError}">
+    <p><c:out value="${duplicateError}"/></p>
+</c:if>
+
 <form method="post" action="${pageContext.request.contextPath}/admin/universities">
     <input type="hidden" name="action" value="create">
 

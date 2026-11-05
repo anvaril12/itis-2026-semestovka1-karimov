@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import ru.itis.karimov.entity.UniversityEntity;
+import ru.itis.karimov.exception.DuplicateException;
 import ru.itis.karimov.exception.ValidationException;
 import ru.itis.karimov.service.UniversityAdminService;
 
@@ -56,6 +57,12 @@ public class UniversityAdminServlet extends HttpServlet {
             universityAdminService.save(universityEntity);
             session.setAttribute("flashSuccess", "Вуз успешно добавлен!");
             response.sendRedirect(request.getContextPath() + "/admin/universities");
+        } catch (DuplicateException e) {
+            request.setAttribute("duplicateError", e.getMessage());
+            request.setAttribute("name", name == null ? "" : name);
+            request.setAttribute("city", city == null ? "" : city);
+
+            request.getRequestDispatcher("/WEB-INF/views/admin/university-form.jsp").forward(request, response);
         } catch (ValidationException e) {
             request.setAttribute("errors", e.getError());
             request.setAttribute("name", name == null ? "" : name);

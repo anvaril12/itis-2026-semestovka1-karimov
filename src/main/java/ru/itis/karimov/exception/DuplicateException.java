@@ -1,0 +1,7 @@
+package ru.itis.karimov.exception;
+
+public class DuplicateException extends RuntimeException {
+    public DuplicateException(String message) {
+        super(message);
+    }
+}

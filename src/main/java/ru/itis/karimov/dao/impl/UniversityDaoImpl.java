@@ -4,6 +4,7 @@ import ru.itis.karimov.dao.UniversityDao;
 import ru.itis.karimov.dao.mapper.RowMapper;
 import ru.itis.karimov.dao.mapper.impl.UniversityRowMapper;
 import ru.itis.karimov.entity.UniversityEntity;
+import ru.itis.karimov.exception.DuplicateException;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -72,7 +73,10 @@ public class UniversityDaoImpl implements UniversityDao {
                 return university;
             }
         } catch(SQLException e) {
-            throw new RuntimeException("Не удалось сохранить университет:", e);
+            if("23505".equals(e.getSQLState())) {
+                throw new DuplicateException("Такой ВУЗ в этом городе уже есть");
+            }
+            throw new RuntimeException("Не удалось сохранить университет", e);
         }
     }
 }
