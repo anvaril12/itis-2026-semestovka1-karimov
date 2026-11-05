@@ -103,7 +103,7 @@ public class QuestionAdminServiceImpl implements QuestionAdminService {
                 .isActive(false)
                 .build();
 
-        return questionDao.save(questionEntity);
+        return questionDao.saveWithOptions(questionEntity, list);
     }
 
     @Override
