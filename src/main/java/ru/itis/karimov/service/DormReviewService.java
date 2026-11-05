@@ -10,4 +10,5 @@ public interface DormReviewService {
     DormReviewEntity save(DormReviewEntity dormReviewEntity);
     void update(Long userId, DormReviewEntity dormReviewEntity);
     void delete(Long userId, Long id);
+    void deleteByAdmin(Long id);
 }

@@ -86,6 +86,14 @@ public class DormReviewServiceImpl implements DormReviewService {
         dormReviewDao.deleteById(id);
     }
 
+    @Override
+    public void deleteByAdmin(Long id) {
+        if (dormReviewDao.findById(id).isEmpty()) {
+            throw new NotFoundException("Не удалось найти отзыв");
+        }
+        dormReviewDao.deleteById(id);
+    }
+
     private void validateDormReview(DormReviewEntity dormReviewEntity) {
         if(dormReviewEntity.getText() == null || dormReviewEntity.getRating() == null) {
             throw new ValidationException(Map.of("review", "Введите текст и рейтинг"));

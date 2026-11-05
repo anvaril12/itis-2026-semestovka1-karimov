@@ -41,6 +41,9 @@
                         <input type="hidden" name="receiverId" value="${m.user.id}">
                         <button type="submit">Хочу жить вместе</button>
                     </form>
+                    <a href="${pageContext.request.contextPath}/complaints?receiverId=${m.user.id}">
+                        Пожаловаться
+                    </a>
                 </li>
             </c:forEach>
         </ul>
