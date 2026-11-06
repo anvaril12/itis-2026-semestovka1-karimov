@@ -7,4 +7,5 @@ public interface UserService {
     UserEntity register(RegistrationForm form);
     UserEntity login(String login, String password);
     UserEntity updateDormitory(Long userId, String dormitoryId, String universityId);
+    UserEntity getActiveUser(Long userId);
 }

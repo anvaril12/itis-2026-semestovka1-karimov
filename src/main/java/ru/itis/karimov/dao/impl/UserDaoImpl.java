@@ -27,6 +27,8 @@ public class UserDaoImpl implements UserDao {
             "role = ?, course = ?, birth_year = ?, is_blocked = ?, is_confirmed = ?, " +
             "dormitory_id = ? where id = ?";
     private static final String SQL_FIND_BY_DORMITORY_ID = "select * from users where dormitory_id = ?";
+    private static final String SQL_UPDATE_BLOCKED = "update users set is_blocked = ? where id = ?";
+    private static final String SQL_FIND_BY_BLOCKED = "select * from users where is_blocked = ? order by id";
 
     private final DataSource dataSource;
     private final RowMapper<UserEntity> entityRowMapper = new UserRowMapper();
@@ -81,6 +83,36 @@ public class UserDaoImpl implements UserDao {
             }
         } catch(SQLException e) {
             throw new RuntimeException("Не удалось найти пользователей по id общежития: " + id, e);
+        }
+    }
+
+    @Override
+    public void updateBlocked(Long userId, boolean blocked) {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_BLOCKED)) {
+            preparedStatement.setBoolean(1, blocked);
+            preparedStatement.setLong(2, userId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Не удалось изменить блокировку пользователя с id: " + userId, e);
+        }
+    }
+
+    @Override
+    public List<UserEntity> findByBlocked(boolean blocked) {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_BLOCKED)) {
+            preparedStatement.setBoolean(1, blocked);
+
+            List<UserEntity> list = new ArrayList<>();
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                while(resultSet.next()) {
+                    list.add(entityRowMapper.mapRow(resultSet));
+                }
+                return list;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Не удалось найти пользователей", e);
         }
     }
 

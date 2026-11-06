@@ -1,4 +1,3 @@
-// AJAX: при выборе университета загружаем его общежития из /api/dormitories и заполняем второй список
 const university = document.getElementById("university");
 const dormitory = document.getElementById("dormitory");
 
@@ -19,7 +18,6 @@ university.addEventListener("change", () => {
         return;
     }
 
-    // Адрес API берём из data-url: в нём уже есть contextPath, в JS его не хардкодим
     fetch(university.dataset.url + "?universityId=" + encodeURIComponent(universityId))
         .then(response => {
             if (!response.ok) {
@@ -32,7 +30,6 @@ university.addEventListener("change", () => {
             dormitories.forEach(d => {
                 const option = document.createElement("option");
                 option.value = d.id;
-                // textContent, а не innerHTML: название вставляется как текст (защита от XSS)
                 option.textContent = d.name;
                 dormitory.appendChild(option);
             });

@@ -9,6 +9,7 @@ import ru.itis.karimov.entity.UserEntity;
 import ru.itis.karimov.entity.enums.Gender;
 import ru.itis.karimov.entity.enums.Role;
 import ru.itis.karimov.exception.AuthenticationException;
+import ru.itis.karimov.exception.NotFoundException;
 import ru.itis.karimov.exception.ValidationException;
 import ru.itis.karimov.service.UserService;
 import ru.itis.karimov.validation.RegistrationValidator;
@@ -73,6 +74,10 @@ public class UserServiceImpl implements UserService {
         if(!BCrypt.checkpw(password, userEntity.getHashPassword())) {
             throw new AuthenticationException(message);
         }
+
+        if(userEntity.isBlocked()) {
+            throw new AuthenticationException("Ошибка входа в аккаунт: он заблокирован!");
+        }
         return userEntity;
     }
 
@@ -106,6 +111,21 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userEntity.get();
         user.setDormitoryId(dormId);
         userDao.update(user);
+        return user;
+     }
+
+    @Override
+    public UserEntity getActiveUser(Long userId) {
+        Optional<UserEntity> optional = userDao.findById(userId);
+        if(optional.isEmpty()) {
+            throw new NotFoundException("Не удалось найти пользователя по id: " + userId);
+        }
+
+        UserEntity user = optional.get();
+        if(user.isBlocked()) {
+            throw new AuthenticationException("Аккаунт заблокирован!");
+        }
+
         return user;
      }
 }

@@ -43,6 +43,7 @@
         <nav class="admin-nav" aria-label="Администрирование">
             <div class="admin-nav-inner">
                 <span class="admin-label">Администратор</span>
+                <a href="${pageContext.request.contextPath}/admin/users" aria-current="${param.navSection == 'admin-users' ? 'page' : 'false'}">Пользователи</a>
                 <a href="${pageContext.request.contextPath}/admin/questions" aria-current="${param.navSection == 'admin-questions' ? 'page' : 'false'}">Вопросы</a>
                 <a href="${pageContext.request.contextPath}/admin/universities" aria-current="${param.navSection == 'admin-universities' ? 'page' : 'false'}">Вузы</a>
                 <a href="${pageContext.request.contextPath}/admin/dormitories" aria-current="${param.navSection == 'admin-dormitories' ? 'page' : 'false'}">Общежития</a>
