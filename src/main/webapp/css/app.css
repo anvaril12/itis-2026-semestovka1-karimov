@@ -80,7 +80,6 @@ p { margin: 0 0 16px; }
 .page-description { max-width: 680px; margin-bottom: 28px; color: var(--muted); font-size: 14px; }
 .app-main > p:not(.page-description):last-child { margin-top: 28px; }
 
-/* Полные формы отделяем от небольших форм действий в таблицах и карточках. */
 .app-main > form:has(input:not([type="hidden"]), select, textarea), .auth-card > form {
     width: 100%;
     max-width: 740px;

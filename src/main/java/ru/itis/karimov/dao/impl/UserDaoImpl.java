@@ -29,6 +29,7 @@ public class UserDaoImpl implements UserDao {
     private static final String SQL_FIND_BY_DORMITORY_ID = "select * from users where dormitory_id = ?";
     private static final String SQL_UPDATE_BLOCKED = "update users set is_blocked = ? where id = ?";
     private static final String SQL_FIND_BY_BLOCKED = "select * from users where is_blocked = ? order by id";
+    private static final String SQL_UPDATE_CONFIRMED = "update users set is_confirmed = ? where id = ?";
 
     private final DataSource dataSource;
     private final RowMapper<UserEntity> entityRowMapper = new UserRowMapper();
@@ -113,6 +114,18 @@ public class UserDaoImpl implements UserDao {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Не удалось найти пользователей", e);
+        }
+    }
+
+    @Override
+    public void updateConfirmed(Long userId, boolean confirmed) {
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_CONFIRMED)) {
+            preparedStatement.setBoolean(1, confirmed);
+            preparedStatement.setLong(2, userId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Не удалось подтвержить пользователя с id: " + userId, e);
         }
     }
 

@@ -11,4 +11,5 @@ public interface UserDao extends CrudDao<UserEntity, Long> {
     List<UserEntity> findByDormitoryId(Integer id);
     void updateBlocked(Long userId, boolean blocked);
     List<UserEntity> findByBlocked(boolean blocked);
+    void updateConfirmed(Long userId, boolean confirmed);
 }

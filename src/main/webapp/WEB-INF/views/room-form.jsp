@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%-- одна форма на два режима: если сервлет передал roomId — это редактирование, иначе создание --%>
 <c:set var="isEdit" value="${not empty roomId}"/>
 <!DOCTYPE html>
 <html lang="ru">
@@ -16,7 +15,6 @@
 <h1>${isEdit ? 'Редактирование комнаты' : 'Новая комната'}</h1>
 <p class="page-description">Расскажите о комнате и о том, каких соседей вы ищете.</p>
 
-<%-- общая ошибка, не привязанная к полю (например, не выбрано общежитие) --%>
 <c:if test="${not empty errors.room}">
     <p class="flash error"><c:out value="${errors.room}"/></p>
 </c:if>

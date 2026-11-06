@@ -14,7 +14,6 @@
 <h1>Комнаты в моём общежитии</h1>
 <p class="page-description">Найдите свою компанию или создайте комнату для будущих соседей.</p>
 
-<%-- flash-сообщения: показываем один раз и сразу удаляем из сессии --%>
 <c:if test="${not empty sessionScope.flashSuccess}">
     <p class="flash success"><c:out value="${sessionScope.flashSuccess}"/></p>
     <c:remove var="flashSuccess" scope="session"/>
@@ -38,7 +37,6 @@
                 <th>Владелец</th>
                 <th></th>
             </tr>
-            <%-- rooms — список RoomView: в каждом элементе комната и её владелец --%>
             <c:forEach var="roomView" items="${rooms}">
                 <tr>
                     <td><c:out value="${roomView.roomEntity.roomNumber}"/></td>

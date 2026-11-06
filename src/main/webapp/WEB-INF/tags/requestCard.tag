@@ -35,7 +35,6 @@
             </c:if>
         </c:when>
         <c:when test="${requestView.roommateRequestEntity.status == 'ACCEPTED'}">
-            <%-- Контакты показываем только после взаимного согласия. --%>
             <div class="request-contact">
                 <span class="contact-symbol" aria-hidden="true">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 3H5a2 2 0 0 0-2 2c0 8.8 7.2 16 16 16a2 2 0 0 0 2-2v-3l-5-2-2 2a14 14 0 0 1-6-6l2-2-2-5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>

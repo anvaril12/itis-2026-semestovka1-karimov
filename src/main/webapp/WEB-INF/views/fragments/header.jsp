@@ -15,6 +15,9 @@
 
         <nav class="main-nav" aria-label="Основная навигация">
             <c:choose>
+                <c:when test="${not empty sessionScope.user and not sessionScope.user.confirmed}">
+                    <a href="${pageContext.request.contextPath}/confirm" aria-current="page">Подтверждение аккаунта</a>
+                </c:when>
                 <c:when test="${not empty sessionScope.user}">
                     <a href="${pageContext.request.contextPath}/profile" aria-current="${param.navSection == 'profile' ? 'page' : 'false'}">Профиль</a>
                     <a href="${pageContext.request.contextPath}/matches" aria-current="${param.navSection == 'matches' ? 'page' : 'false'}">Найти соседей</a>
@@ -39,7 +42,7 @@
         </c:if>
     </div>
 
-    <c:if test="${sessionScope.user.role == 'ADMIN'}">
+    <c:if test="${sessionScope.user.role == 'ADMIN' and sessionScope.user.confirmed}">
         <nav class="admin-nav" aria-label="Администрирование">
             <div class="admin-nav-inner">
                 <span class="admin-label">Администратор</span>

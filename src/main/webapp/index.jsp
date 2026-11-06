@@ -14,7 +14,6 @@
 <h1>Подбор соседей</h1>
 <p class="page-description">Найдите людей, с которыми комфортно жить в одном пространстве.</p>
 
-<%-- user кладёт в сессию SignInServlet; сюда без входа не пустит AuthFilter --%>
 <p>Вы вошли как <c:out value="${sessionScope.user.login}"/></p>
 
 <p><a class="button-link" href="${pageContext.request.contextPath}/matches">Найти соседей</a></p>

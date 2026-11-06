@@ -70,7 +70,6 @@
                     </td>
                     <td>
                         <c:if test="${not empty complaint.createdAt}">
-                            <%-- fmt работает с java.util.Date: разбираем LocalDateTime до минут. --%>
                             <fmt:parseDate value="${fn:substring(complaint.createdAt, 0, 16)}"
                                            pattern="yyyy-MM-dd'T'HH:mm" var="createdAt"/>
                             <fmt:formatDate value="${createdAt}" pattern="dd.MM.yyyy HH:mm"/>

@@ -19,8 +19,6 @@
     <p class="error">Ответы не сохранены — исправьте ошибки ниже.</p>
 </c:if>
 
-<%-- errors есть только после неудачного POST: тогда показываем то, что пользователь
-     только что отправил (param), иначе — сохранённые ответы из БД (userAnswer) --%>
 <c:set var="resubmit" value="${not empty errors}"/>
 
 <form method="post" action="${pageContext.request.contextPath}/questionnaire">

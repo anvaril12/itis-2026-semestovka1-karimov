@@ -19,6 +19,12 @@ public class ConfirmationCodeDaoImpl implements ConfirmationCodeDao {
     private static final String SQL_FIND_BY_CODE = "select id, user_id, code, send_at from " +
             "confirmation_codes where code = ?";
     private static final String SQL_DELETE_BY_USER_ID = "delete from confirmation_codes where user_id = ?";
+    private static final String SQL_FIND_BY_USER_ID = "select * from confirmation_codes where user_id = ?";
+    private static final String SQL_CONSUME_AND_CONFIRM = "with consumed_code as (" +
+            "delete from confirmation_codes where code = ? and send_at > ? returning user_id" +
+            ") update users set is_confirmed = true " +
+            "where id in (select user_id from consumed_code) " +
+            "and is_blocked = false and is_confirmed = false";
 
     private final DataSource dataSource;
     private final RowMapper<ConfirmationCodeEntity> confirmationCodeEntityRowMapper =
@@ -71,6 +77,34 @@ public class ConfirmationCodeDaoImpl implements ConfirmationCodeDao {
             preparedStatement.executeUpdate();
         } catch(SQLException e) {
             throw new RuntimeException("Не удалось удалить код у пользователя: " + userId, e);
+        }
+    }
+
+    @Override
+    public Optional<ConfirmationCodeEntity> findByUserId(Long userId) {
+        try (Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_USER_ID)) {
+            preparedStatement.setLong(1, userId);
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                if(resultSet.next()) {
+                    return Optional.of(confirmationCodeEntityRowMapper.mapRow(resultSet));
+                }
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Не удалось найти коды подтверждения по id пользователя: " + userId, e);
+        }
+    }
+
+    @Override
+    public boolean consumeAndConfirm(String code, LocalDateTime validSince) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_CONSUME_AND_CONFIRM)) {
+            preparedStatement.setString(1, code);
+            preparedStatement.setObject(2, validSince);
+            return preparedStatement.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException("Не удалось подтвердить аккаунт по коду", e);
         }
     }
 }

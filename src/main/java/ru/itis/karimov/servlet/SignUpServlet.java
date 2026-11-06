@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ru.itis.karimov.dto.RegistrationForm;
+import ru.itis.karimov.entity.UserEntity;
 import ru.itis.karimov.exception.ValidationException;
 import ru.itis.karimov.service.UserService;
 
@@ -23,6 +24,12 @@ public class SignUpServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        UserEntity user = request.getSession(false) == null ? null
+                : (UserEntity) request.getSession(false).getAttribute("user");
+        if (user != null) {
+            response.sendRedirect(request.getContextPath() + (user.isConfirmed() ? "/profile" : "/confirm"));
+            return;
+        }
         request.getRequestDispatcher("/WEB-INF/views/signup.jsp").forward(request, response);
     }
 
@@ -43,8 +50,11 @@ public class SignUpServlet extends HttpServlet {
         );
 
         try {
-            userService.register(form);
-            response.sendRedirect(request.getContextPath() + "/signin");
+            UserEntity user = userService.register(form);
+            request.getSession();
+            request.changeSessionId();
+            request.getSession().setAttribute("user", user);
+            response.sendRedirect(request.getContextPath() + "/confirm");
         } catch (ValidationException e) {
             request.setAttribute("errors", e.getError());
             request.setAttribute("form", form);

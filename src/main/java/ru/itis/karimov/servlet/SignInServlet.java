@@ -22,6 +22,12 @@ public class SignInServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        UserEntity user = request.getSession(false) == null ? null
+                : (UserEntity) request.getSession(false).getAttribute("user");
+        if (user != null) {
+            response.sendRedirect(request.getContextPath() + (user.isConfirmed() ? "/profile" : "/confirm"));
+            return;
+        }
         request.getRequestDispatcher("/WEB-INF/views/signin.jsp").forward(request, response);
     }
 
@@ -34,7 +40,7 @@ public class SignInServlet extends HttpServlet {
             request.getSession();
             request.changeSessionId();
             request.getSession().setAttribute("user", userEntity);
-            response.sendRedirect(request.getContextPath() + "/profile");
+            response.sendRedirect(request.getContextPath() + (userEntity.isConfirmed() ? "/profile" : "/confirm"));
         } catch(AuthenticationException e) {
             request.setAttribute("error", e.getMessage());
             request.setAttribute("login", login);

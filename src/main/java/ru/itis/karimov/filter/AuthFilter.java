@@ -53,6 +53,10 @@ public class AuthFilter implements Filter {
         }
 
         session.setAttribute("user", activeUser);
+        if (!activeUser.isConfirmed() && !path.equals("/confirm") && !path.equals("/signout")) {
+            resp.sendRedirect(req.getContextPath() + "/confirm");
+            return;
+        }
         chain.doFilter(request, response);
     }
 

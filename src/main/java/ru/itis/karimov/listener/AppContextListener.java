@@ -4,7 +4,14 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.OkHttpClient;
 import org.postgresql.ds.PGSimpleDataSource;
+import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
+import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
+import org.telegram.telegrambots.meta.api.methods.GetMe;
+import org.telegram.telegrambots.meta.generics.TelegramClient;
+import ru.itis.karimov.bot.ConfirmationBot;
 import ru.itis.karimov.dao.*;
 import ru.itis.karimov.dao.impl.*;
 import ru.itis.karimov.service.*;
@@ -13,9 +20,15 @@ import ru.itis.karimov.service.impl.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 @WebListener
 public class AppContextListener implements ServletContextListener {
+
+    private TelegramBotsLongPollingApplication botsApplication;
+    private ScheduledExecutorService botExecutor;
+    private OkHttpClient telegramHttpClient;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -37,8 +50,10 @@ public class AppContextListener implements ServletContextListener {
         RoomMemberDao roomMemberDao = new RoomMemberDaoImpl(dataSource);
         DormReviewDao dormReviewDao = new DormReviewDaoImpl(dataSource);
         ComplaintDao complaintDao = new ComplaintDaoImpl(dataSource);
+        ConfirmationCodeDao confirmationCodeDao = new ConfirmationCodeDaoImpl(dataSource);
 
         UserService userService = new UserServiceImpl(userDao, dormitoryDao);
+        ConfirmationService confirmationService = new ConfirmationServiceImpl(userDao, confirmationCodeDao);
         DormitoryService dormitoryService = new DormitoryServiceImpl(dormitoryDao, universityDao);
         QuestionnaireService questionnaireService = new QuestionnaireServiceImpl(questionDao, answerOptionDao, userAnswerDao);
         CompatibilityService compatibilityService = new CompatibilityServiceImpl(userDao, userAnswerDao);
@@ -63,12 +78,63 @@ public class AppContextListener implements ServletContextListener {
         context.setAttribute("universityAdminService", universityAdminService);
         context.setAttribute("questionAdminService", questionAdminService);
         context.setAttribute("userService", userService);
+        context.setAttribute("confirmationService", confirmationService);
         context.setAttribute("dormitoryService", dormitoryService);
         context.setAttribute("questionnaireService", questionnaireService);
         context.setAttribute("compatibilityService", compatibilityService);
         context.setAttribute("roommateRequestService", roommateRequestService);
         context.setAttribute("roomService", roomService);
         context.setAttribute("roomMemberService", roomMemberService);
+        startBot(context, confirmationService);
+    }
+
+    private void startBot(ServletContext context, ConfirmationService confirmationService) {
+        String token = System.getenv("TELEGRAM_BOT_TOKEN");
+        if (token == null || token.isBlank()) {
+            context.log("TELEGRAM_BOT_TOKEN не задан — бот подтверждения не запущен");
+            return;
+        }
+
+        telegramHttpClient = new OkHttpClient();
+        botExecutor = Executors.newSingleThreadScheduledExecutor();
+        botsApplication = new TelegramBotsLongPollingApplication(
+                ObjectMapper::new, () -> telegramHttpClient, () -> botExecutor);
+        TelegramClient client = new OkHttpTelegramClient(telegramHttpClient, token);
+        ConfirmationBot bot = new ConfirmationBot(client, confirmationService);
+        try {
+            String username = client.execute(new GetMe()).getUserName();
+            botsApplication.registerBot(token, bot);
+            context.setAttribute("telegramBotLink", "https://t.me/" + username);
+            context.log("Telegram-бот подтверждения запущен");
+        } catch (Exception e) {
+            bot.close();
+            stopBot(context);
+            context.log("Не удалось запустить Telegram-бота. Сайт продолжит работу без бота. Проверьте токен и доступ к Telegram.");
+        }
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        stopBot(sce.getServletContext());
+    }
+
+    private void stopBot(ServletContext context) {
+        try {
+            if (botsApplication != null) {
+                botsApplication.close();
+            }
+        } catch (Exception e) {
+            context.log("Ошибка остановки Telegram-бота");
+        } finally {
+            if (botExecutor != null) {
+                botExecutor.shutdownNow();
+            }
+            if (telegramHttpClient != null) {
+                telegramHttpClient.dispatcher().cancelAll();
+                telegramHttpClient.dispatcher().executorService().shutdownNow();
+                telegramHttpClient.connectionPool().evictAll();
+            }
+        }
     }
 
     private Properties loadProperties() {

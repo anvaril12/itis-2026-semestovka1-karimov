@@ -22,7 +22,6 @@
     <a class="button-link button-secondary" href="${pageContext.request.contextPath}/matches">Найти соседей <span aria-hidden="true">↗</span></a>
 </div>
 
-<%-- flash-сообщения: показываем один раз и сразу удаляем из сессии --%>
 <c:if test="${not empty sessionScope.flashSuccess}">
     <p class="flash success" role="status"><c:out value="${sessionScope.flashSuccess}"/></p>
     <c:remove var="flashSuccess" scope="session"/>
