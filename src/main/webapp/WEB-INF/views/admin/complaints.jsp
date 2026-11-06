@@ -6,11 +6,15 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Модерация жалоб</title>
+    <jsp:include page="/WEB-INF/views/fragments/head.jsp"/>
 </head>
-<body>
+<body class="page-admin-complaints">
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="navSection" value="admin-complaints"/>
+</jsp:include>
 <h1>Модерация жалоб</h1>
+<p class="page-description">Рассматривайте обращения студентов и отмечайте результат.</p>
 
 <c:if test="${not empty sessionScope.flashSuccess}">
     <p role="status"><c:out value="${sessionScope.flashSuccess}"/></p>
@@ -37,6 +41,7 @@
         <p>Жалоб по выбранному фильтру нет.</p>
     </c:when>
     <c:otherwise>
+        <div class="table-scroll" role="region" aria-label="Таблица данных" tabindex="0">
         <table>
             <thead>
             <tr>
@@ -89,9 +94,11 @@
             </c:forEach>
             </tbody>
         </table>
+        </div>
     </c:otherwise>
 </c:choose>
 
 <p><a href="${pageContext.request.contextPath}/profile">Вернуться в профиль</a></p>
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
 </body>
 </html>

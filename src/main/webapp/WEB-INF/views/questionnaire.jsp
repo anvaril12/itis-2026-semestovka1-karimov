@@ -4,11 +4,15 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Анкета</title>
+    <jsp:include page="/WEB-INF/views/fragments/head.jsp"/>
 </head>
-<body>
+<body class="page-questionnaire">
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="navSection" value="questionnaire"/>
+</jsp:include>
 <h1>Анкета</h1>
+<p class="page-description">Расскажите о своих привычках и о том, что важно для вас.</p>
 <p>Ответьте на вопросы — по ним мы подберём совместимых соседей.</p>
 
 <c:if test="${not empty errors}">
@@ -59,5 +63,6 @@
 </form>
 
 <p><a href="${pageContext.request.contextPath}/profile">Вернуться в профиль</a></p>
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
 </body>
 </html>

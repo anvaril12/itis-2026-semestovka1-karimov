@@ -4,11 +4,15 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Управление общежитиями</title>
+    <jsp:include page="/WEB-INF/views/fragments/head.jsp"/>
 </head>
-<body>
+<body class="page-admin-dormitories">
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="navSection" value="admin-dormitories"/>
+</jsp:include>
 <h1>Общежития</h1>
+<p class="page-description">Общежития, в которых студенты находят соседей.</p>
 
 <p>
     <a href="${pageContext.request.contextPath}/admin/dormitories?action=create">
@@ -17,12 +21,12 @@
 </p>
 
 <c:if test="${not empty sessionScope.flashSuccess}">
-    <p><c:out value="${sessionScope.flashSuccess}"/></p>
+    <p class="flash success" role="status"><c:out value="${sessionScope.flashSuccess}"/></p>
     <c:remove var="flashSuccess" scope="session"/>
 </c:if>
 
 <c:if test="${not empty sessionScope.flashError}">
-    <p><c:out value="${sessionScope.flashError}"/></p>
+    <p class="flash error" role="alert"><c:out value="${sessionScope.flashError}"/></p>
     <c:remove var="flashError" scope="session"/>
 </c:if>
 
@@ -31,6 +35,7 @@
         <p>Общежитий пока нет.</p>
     </c:when>
     <c:otherwise>
+        <div class="table-scroll" role="region" aria-label="Таблица данных" tabindex="0">
         <table>
             <thead>
             <tr>
@@ -55,18 +60,20 @@
                         <form method="post" action="${pageContext.request.contextPath}/admin/dormitories">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="${dormitory.id}">
-                            <button type="submit">Удалить</button>
+                            <button class="button-danger" type="submit">Удалить</button>
                         </form>
                     </td>
                 </tr>
             </c:forEach>
             </tbody>
         </table>
+        </div>
     </c:otherwise>
 </c:choose>
 
 <p>
     <a href="${pageContext.request.contextPath}/profile">Вернуться в профиль</a>
 </p>
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
 </body>
 </html>

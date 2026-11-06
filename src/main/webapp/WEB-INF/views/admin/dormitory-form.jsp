@@ -4,21 +4,25 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
         <c:choose>
             <c:when test="${not empty dormitory}">Редактирование общежития</c:when>
             <c:otherwise>Добавление общежития</c:otherwise>
         </c:choose>
     </title>
+    <jsp:include page="/WEB-INF/views/fragments/head.jsp"/>
 </head>
-<body>
+<body class="page-admin-dormitories">
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="navSection" value="admin-dormitories"/>
+</jsp:include>
 <h1>
     <c:choose>
         <c:when test="${not empty dormitory}">Редактировать общежитие</c:when>
         <c:otherwise>Добавить общежитие</c:otherwise>
     </c:choose>
 </h1>
+<p class="page-description">Укажите вуз, название общежития и адрес.</p>
 
 <c:if test="${not empty errors.dormitory}">
     <p><c:out value="${errors.dormitory}"/></p>
@@ -65,5 +69,6 @@
 <p>
     <a href="${pageContext.request.contextPath}/admin/dormitories">Назад к списку</a>
 </p>
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
 </body>
 </html>

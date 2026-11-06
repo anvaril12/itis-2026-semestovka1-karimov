@@ -4,21 +4,25 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
         <c:choose>
             <c:when test="${not empty question}">Изменить вопрос</c:when>
             <c:otherwise>Добавить вопрос</c:otherwise>
         </c:choose>
     </title>
+    <jsp:include page="/WEB-INF/views/fragments/head.jsp"/>
 </head>
-<body>
+<body class="page-admin-questions">
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="navSection" value="admin-questions"/>
+</jsp:include>
 <h1>
     <c:choose>
         <c:when test="${not empty question}">Изменить вопрос</c:when>
         <c:otherwise>Добавить вопрос</c:otherwise>
     </c:choose>
 </h1>
+<p class="page-description">Настройте вопрос и варианты ответа для анкеты привычек.</p>
 
 <c:if test="${not empty errors.text}">
     <p class="error">
@@ -88,5 +92,6 @@
         Вернуться к списку
     </a>
 </p>
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
 </body>
 </html>

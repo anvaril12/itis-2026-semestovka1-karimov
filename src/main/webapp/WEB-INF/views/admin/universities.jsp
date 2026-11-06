@@ -4,11 +4,15 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Управление вузами</title>
+    <jsp:include page="/WEB-INF/views/fragments/head.jsp"/>
 </head>
-<body>
+<body class="page-admin-universities">
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="navSection" value="admin-universities"/>
+</jsp:include>
 <h1>Вузы</h1>
+<p class="page-description">Вузы, доступные студентам при выборе общежития.</p>
 
 <c:if test="${not empty sessionScope.flashSuccess}">
     <p class="success"><c:out value="${sessionScope.flashSuccess}"/></p>
@@ -29,6 +33,7 @@
         <p>Вузов пока нет.</p>
     </c:when>
     <c:otherwise>
+        <div class="table-scroll" role="region" aria-label="Таблица данных" tabindex="0">
         <table>
             <thead>
             <tr>
@@ -51,18 +56,20 @@
                         <form method="post" action="${pageContext.request.contextPath}/admin/universities">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="${university.id}">
-                            <button type="submit">Удалить</button>
+                            <button class="button-danger" type="submit">Удалить</button>
                         </form>
                     </td>
                 </tr>
             </c:forEach>
             </tbody>
         </table>
+        </div>
     </c:otherwise>
 </c:choose>
 
 <p>
     <a href="${pageContext.request.contextPath}/profile">Вернуться в профиль</a>
 </p>
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
 </body>
 </html>

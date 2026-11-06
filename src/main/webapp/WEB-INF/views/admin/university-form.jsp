@@ -4,21 +4,25 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
         <c:choose>
             <c:when test="${not empty university}">Редактирование вуза</c:when>
             <c:otherwise>Добавление вуза</c:otherwise>
         </c:choose>
     </title>
+    <jsp:include page="/WEB-INF/views/fragments/head.jsp"/>
 </head>
-<body>
+<body class="page-admin-universities">
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="navSection" value="admin-universities"/>
+</jsp:include>
 <h1>
     <c:choose>
         <c:when test="${not empty university}">Редактировать вуз</c:when>
         <c:otherwise>Добавить вуз</c:otherwise>
     </c:choose>
 </h1>
+<p class="page-description">Укажите название вуза и город.</p>
 
 <c:if test="${not empty errors.university}">
     <p><c:out value="${errors.university}"/></p>
@@ -63,5 +67,6 @@
 <p>
     <a href="${pageContext.request.contextPath}/admin/universities">Назад к списку</a>
 </p>
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
 </body>
 </html>

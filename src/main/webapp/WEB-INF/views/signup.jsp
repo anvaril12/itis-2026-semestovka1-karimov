@@ -4,11 +4,23 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Регистрация</title>
+    <jsp:include page="/WEB-INF/views/fragments/head.jsp"/>
 </head>
-<body>
-<h1>Регистрация</h1>
+<body class="page-signup">
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="navSection" value="signup"/>
+</jsp:include>
+<div class="auth-layout">
+    <aside class="auth-story" aria-label="О сервисе">
+        <span class="eyebrow">Хорошее соседство начинается здесь</span>
+        <h2>Общее пространство.<br>Близкие привычки.</h2>
+        <p>Найдите соседей, с которыми комфортно учиться, отдыхать и просто быть собой.</p>
+        <div class="story-note"><span class="story-number">01—03</span><span>Расскажите о себе.<br>Найдите своих людей.<br>Планируйте жить вместе.</span></div>
+    </aside>
+    <section class="auth-card" aria-labelledby="auth-title">
+<h1 id="auth-title">Регистрация</h1>
+<p class="page-description">Начните знакомство с будущими соседями.</p>
 
 <form method="post" action="${pageContext.request.contextPath}/signup">
 
@@ -87,5 +99,8 @@
 </form>
 
 <p>Уже есть аккаунт? <a href="${pageContext.request.contextPath}/signin">Войти</a></p>
+</section>
+</div>
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
 </body>
 </html>

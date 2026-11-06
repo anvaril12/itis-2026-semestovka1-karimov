@@ -4,11 +4,15 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Комнаты в моём общежитии</title>
+    <jsp:include page="/WEB-INF/views/fragments/head.jsp"/>
 </head>
-<body>
+<body class="page-rooms">
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="navSection" value="rooms"/>
+</jsp:include>
 <h1>Комнаты в моём общежитии</h1>
+<p class="page-description">Найдите свою компанию или создайте комнату для будущих соседей.</p>
 
 <%-- flash-сообщения: показываем один раз и сразу удаляем из сессии --%>
 <c:if test="${not empty sessionScope.flashSuccess}">
@@ -26,6 +30,7 @@
             <a href="${pageContext.request.contextPath}/profile">профиле</a>.</p>
     </c:when>
     <c:otherwise>
+        <div class="table-scroll" role="region" aria-label="Таблица данных" tabindex="0">
         <table>
             <tr>
                 <th>Комната</th>
@@ -43,10 +48,12 @@
                 </tr>
             </c:forEach>
         </table>
+        </div>
     </c:otherwise>
 </c:choose>
 
 <p><a href="${pageContext.request.contextPath}/rooms/create">Создать комнату</a></p>
 <p><a href="${pageContext.request.contextPath}/profile">Профиль</a></p>
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
 </body>
 </html>

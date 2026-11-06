@@ -4,11 +4,15 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Управление вопросами</title>
+    <jsp:include page="/WEB-INF/views/fragments/head.jsp"/>
 </head>
-<body>
+<body class="page-admin-questions">
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="navSection" value="admin-questions"/>
+</jsp:include>
 <h1>Вопросы анкеты</h1>
+<p class="page-description">Управляйте вопросами, по которым студенты находят друг друга.</p>
 
 <c:if test="${not empty sessionScope.flashSuccess}">
     <p class="success">
@@ -35,6 +39,7 @@
         <p>Вопросов пока нет.</p>
     </c:when>
     <c:otherwise>
+        <div class="table-scroll" role="region" aria-label="Таблица данных" tabindex="0">
         <table>
             <thead>
             <tr>
@@ -64,11 +69,13 @@
             </c:forEach>
             </tbody>
         </table>
+        </div>
     </c:otherwise>
 </c:choose>
 
 <p>
     <a href="${pageContext.request.contextPath}/profile">Вернуться в профиль</a>
 </p>
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
 </body>
 </html>

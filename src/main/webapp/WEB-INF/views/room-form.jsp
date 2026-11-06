@@ -6,11 +6,15 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>${isEdit ? 'Редактирование комнаты' : 'Новая комната'}</title>
+    <jsp:include page="/WEB-INF/views/fragments/head.jsp"/>
 </head>
-<body>
+<body class="page-rooms">
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="navSection" value="rooms"/>
+</jsp:include>
 <h1>${isEdit ? 'Редактирование комнаты' : 'Новая комната'}</h1>
+<p class="page-description">Расскажите о комнате и о том, каких соседей вы ищете.</p>
 
 <%-- общая ошибка, не привязанная к полю (например, не выбрано общежитие) --%>
 <c:if test="${not empty errors.room}">
@@ -60,5 +64,6 @@
         <p><a href="${pageContext.request.contextPath}/profile">Профиль</a></p>
     </c:otherwise>
 </c:choose>
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
 </body>
 </html>

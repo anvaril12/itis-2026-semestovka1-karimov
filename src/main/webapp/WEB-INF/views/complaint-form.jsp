@@ -5,9 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Жалоба на пользователя</title>
+    <jsp:include page="/WEB-INF/views/fragments/head.jsp"/>
 </head>
-<body>
+<body class="page-matches">
+<jsp:include page="/WEB-INF/views/fragments/header.jsp">
+    <jsp:param name="navSection" value="matches"/>
+</jsp:include>
 <h1>Жалоба на пользователя</h1>
+<p class="page-description">Опишите ситуацию — администратор рассмотрит ваше обращение.</p>
 
 <c:if test="${not empty errors.complaint}">
     <p><c:out value="${errors.complaint}"/></p>
@@ -24,5 +29,6 @@
 </form>
 
 <p><a href="${pageContext.request.contextPath}/matches">Вернуться к подбору соседей</a></p>
+<jsp:include page="/WEB-INF/views/fragments/footer.jsp"/>
 </body>
 </html>
