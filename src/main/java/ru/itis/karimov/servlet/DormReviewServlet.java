@@ -58,7 +58,7 @@ public class DormReviewServlet extends HttpServlet {
             }
 
             Integer dormitoryId = Integer.parseInt(request.getParameter("dormitoryId"));
-            Integer rating = Integer.parseInt(request.getParameter("rating"));
+            Integer rating = parseRating(request.getParameter("rating"));
 
             if("create".equals(action)) {
                 DormReviewEntity dormReviewEntity = DormReviewEntity.builder()
@@ -98,8 +98,21 @@ public class DormReviewServlet extends HttpServlet {
             request.setAttribute("errors", e.getError());
             request.setAttribute("reviews", dormReviewService.findByDormitoryId(dormitoryId));
             request.setAttribute("dormitoryId", dormitoryId);
-            request.setAttribute("text", text == null ? "" : text);
+            request.setAttribute("formAction", action);
+            request.setAttribute("submittedText", text == null ? "" : text);
+            request.setAttribute("submittedRating", parseRating(request.getParameter("rating")));
+            if ("update".equals(action)) {
+                request.setAttribute("editedReviewId", Long.parseLong(request.getParameter("id")));
+            }
             request.getRequestDispatcher("/WEB-INF/views/reviews.jsp").forward(request, response);
+        }
+    }
+
+    private Integer parseRating(String rating) {
+        try {
+            return Integer.valueOf(rating);
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
 }

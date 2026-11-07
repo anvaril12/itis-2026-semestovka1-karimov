@@ -1,11 +1,14 @@
 package ru.itis.karimov.service.impl;
 
 import ru.itis.karimov.dao.RoomDao;
+import ru.itis.karimov.dao.RoomMemberDao;
 import ru.itis.karimov.dao.UserDao;
 import ru.itis.karimov.dto.RoomForm;
 import ru.itis.karimov.dto.RoomView;
 import ru.itis.karimov.entity.RoomEntity;
+import ru.itis.karimov.entity.RoomMemberEntity;
 import ru.itis.karimov.entity.UserEntity;
+import ru.itis.karimov.entity.enums.RoomMemberStatus;
 import ru.itis.karimov.exception.ForbiddenException;
 import ru.itis.karimov.exception.NotFoundException;
 import ru.itis.karimov.exception.ValidationException;
@@ -22,10 +25,12 @@ public class RoomServiceImpl implements RoomService {
     private final RoomValidator roomValidator = new RoomValidator();
     private final RoomDao roomDao;
     private final UserDao userDao;
+    private final RoomMemberDao roomMemberDao;
 
-    public RoomServiceImpl(RoomDao roomDao, UserDao userDao) {
+    public RoomServiceImpl(RoomDao roomDao, UserDao userDao, RoomMemberDao roomMemberDao) {
         this.roomDao = roomDao;
         this.userDao = userDao;
+        this.roomMemberDao = roomMemberDao;
     }
 
     @Override
@@ -93,14 +98,30 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void update(Long roomId, RoomForm roomForm, Long userId) {
         Map<String, String> errors = roomValidator.validate(roomForm);
+
         if(!errors.isEmpty()) {
             throw new ValidationException(errors);
         }
-        RoomEntity roomEntity = getOwnerRoom(roomId, userId);
-        roomEntity.setCapacity(Integer.parseInt(roomForm.capacity()));
-        roomEntity.setDescription(roomForm.description());
-        roomEntity.setRoomNumber(roomForm.roomNumber());
-        roomDao.update(roomEntity);
+
+        RoomEntity room = getOwnerRoom(roomId, userId);
+        int capacity = Integer.parseInt(roomForm.capacity());
+        int resident = 1;
+
+        for (RoomMemberEntity member : roomMemberDao.findByRoomId(roomId)) {
+            if (member.getStatus() == RoomMemberStatus.ACCEPTED) {
+                resident++;
+            }
+        }
+
+        if(capacity < resident) {
+            throw new ValidationException(Map.of("capacity", "В комнате уже " + resident +
+                    " жильца. Вместимость не может быть меньше этого числа"));
+        }
+        room.setCapacity(capacity);
+
+        room.setDescription(roomForm.description());
+        room.setRoomNumber(roomForm.roomNumber());
+        roomDao.update(room);
     }
 
     @Override

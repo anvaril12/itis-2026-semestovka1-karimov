@@ -1,9 +1,6 @@
 package ru.itis.karimov.service.impl;
 
-import ru.itis.karimov.dao.DormitoryDao;
-import ru.itis.karimov.dao.RoomDao;
-import ru.itis.karimov.dao.UniversityDao;
-import ru.itis.karimov.dao.UserDao;
+import ru.itis.karimov.dao.*;
 import ru.itis.karimov.entity.DormitoryEntity;
 import ru.itis.karimov.exception.NotFoundException;
 import ru.itis.karimov.exception.ValidationException;
@@ -19,12 +16,16 @@ public class DormitoryAdminServiceImpl implements DormitoryAdminService {
     private final RoomDao roomDao;
     private final UserDao userDao;
     private final UniversityDao universityDao;
+    private final DormReviewDao dormReviewDao;
 
-    public DormitoryAdminServiceImpl(DormitoryDao dormitoryDao, RoomDao roomDao, UserDao userDao, UniversityDao universityDao) {
+    public DormitoryAdminServiceImpl(DormitoryDao dormitoryDao, RoomDao roomDao,
+                                     UserDao userDao, UniversityDao universityDao,
+                                     DormReviewDao dormReviewDao) {
         this.dormitoryDao = dormitoryDao;
         this.roomDao = roomDao;
         this.userDao = userDao;
         this.universityDao = universityDao;
+        this.dormReviewDao = dormReviewDao;
     }
 
     @Override
@@ -76,6 +77,10 @@ public class DormitoryAdminServiceImpl implements DormitoryAdminService {
 
         if(!userDao.findByDormitoryId(id).isEmpty() || !roomDao.findByDormitoryId(id).isEmpty()) {
             throw new ValidationException(Map.of("dormitory", "Не удалось удалить общежитие: с ним связаны данные"));
+        }
+
+        if(!dormReviewDao.findByDormitoryId(id).isEmpty()) {
+            throw new ValidationException(Map.of("dormitory", "Нельзя удалить общежитие с отзывами"));
         }
 
         dormitoryDao.delete(id);

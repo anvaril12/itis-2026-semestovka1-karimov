@@ -24,6 +24,7 @@
     <c:remove var="flashError" scope="session"/>
 </c:if>
 <c:if test="${not empty errors.review}"><p class="flash error" role="alert"><c:out value="${errors.review}"/></p></c:if>
+<c:set var="createFailed" value="${not empty errors and formAction == 'create'}"/>
 
 <div class="reviews-layout">
     <section class="content-card review-compose">
@@ -35,18 +36,18 @@
             <input type="hidden" name="dormitoryId" value="${dormitoryId}">
             <div class="field">
                 <label for="text">Ваше впечатление</label>
-                <textarea id="text" name="text" maxlength="1000" rows="5" placeholder="О быте, атмосфере и соседях…" required><c:out value="${text}"/></textarea>
-                <span class="error"><c:out value="${errors.text}"/></span>
+                <textarea id="text" name="text" maxlength="1000" rows="5" placeholder="О быте, атмосфере и соседях…" required><c:out value="${createFailed ? submittedText : ''}"/></textarea>
+                <span class="error"><c:out value="${createFailed ? errors.text : ''}"/></span>
             </div>
             <div class="field">
                 <label for="rating">Оценка общежития</label>
                 <select id="rating" name="rating" required>
                     <option value="">Выберите оценку</option>
                     <c:forEach var="value" begin="1" end="5">
-                        <option value="${value}" ${param.action == 'create' and param.rating == value ? 'selected' : ''}><c:out value="${value}"/> из 5</option>
+                        <option value="${value}" ${createFailed and submittedRating == value ? 'selected' : ''}><c:out value="${value}"/> из 5</option>
                     </c:forEach>
                 </select>
-                <span class="error"><c:out value="${errors.rating}"/></span>
+                <span class="error"><c:out value="${createFailed ? errors.rating : ''}"/></span>
             </div>
             <button type="submit">Опубликовать отзыв</button>
         </form>
@@ -71,8 +72,10 @@
                         <p class="review-text"><c:out value="${review.text}"/></p>
                         <p class="review-date"><c:out value="${review.formattedCreatedAt}"/></p>
                         <c:if test="${sessionScope.user.id == review.userId}">
+                            <c:set var="editFailed" value="${not empty errors and formAction == 'update' and editedReviewId == review.id}"/>
+                            <c:set var="editRating" value="${editFailed ? submittedRating : review.rating}"/>
                             <div class="review-actions">
-                                <details>
+                                <details ${editFailed ? 'open' : ''}>
                                     <summary>Редактировать</summary>
                                     <form class="stack-form" method="post" action="${pageContext.request.contextPath}/reviews">
                                         <input type="hidden" name="action" value="update">
@@ -80,15 +83,18 @@
                                         <input type="hidden" name="dormitoryId" value="${dormitoryId}">
                                         <div class="field">
                                             <label for="text-${review.id}">Текст отзыва</label>
-                                            <textarea id="text-${review.id}" name="text" maxlength="1000" required><c:out value="${review.text}"/></textarea>
+                                            <textarea id="text-${review.id}" name="text" maxlength="1000" required><c:out value="${editFailed ? submittedText : review.text}"/></textarea>
+                                            <c:if test="${editFailed}"><span class="error"><c:out value="${errors.text}"/></span></c:if>
                                         </div>
                                         <div class="field">
                                             <label for="rating-${review.id}">Оценка</label>
                                             <select id="rating-${review.id}" name="rating" required>
+                                                <option value="">Выберите оценку</option>
                                                 <c:forEach var="value" begin="1" end="5">
-                                                    <option value="${value}" ${value == review.rating ? 'selected' : ''}><c:out value="${value}"/> из 5</option>
+                                                    <option value="${value}" ${value == editRating ? 'selected' : ''}><c:out value="${value}"/> из 5</option>
                                                 </c:forEach>
                                             </select>
+                                            <c:if test="${editFailed}"><span class="error"><c:out value="${errors.rating}"/></span></c:if>
                                         </div>
                                         <button type="submit">Сохранить</button>
                                     </form>

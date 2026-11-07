@@ -15,7 +15,8 @@ import java.util.List;
 
 public class UserAnswerDaoImpl implements UserAnswerDao {
 
-    private static final String SQL_FIND_BY_USER_ID = "select * from user_answers where user_id = ? order by question_id";
+    private static final String SQL_FIND_BY_USER_ID = "select ua.* from user_answers ua join questions q on " +
+            "ua.question_id = q.id where ua.user_id = ? and q.is_active = true order by ua.question_id";
     private static final String SQL_SAVE = "insert into user_answers (user_id, question_id, value, importance, is_dealbreaker)\n" +
             "values (?, ?, ?, ?, ?)\n" +
             "on conflict (user_id, question_id)\n" +

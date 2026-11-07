@@ -2,6 +2,7 @@ package ru.itis.karimov.validation;
 
 import ru.itis.karimov.dto.RegistrationForm;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,8 +51,8 @@ public class RegistrationValidator {
             errors.put("password", "Введите пароль");
         } else if(password.length() < 8) {
             errors.put("password", "Пароль не должен быть меньше 8 символов");
-        } else if(password.length() > 72) {
-            errors.put("password", "Пароль не должен быть больше 72 символов");
+        } else if(password.getBytes(StandardCharsets.UTF_8).length > 72) {
+            errors.put("password", "Пароль слишком длинный. Используйте более короткий пароль");
         }
 
         String passwordConfirm = form.passwordConfirm();

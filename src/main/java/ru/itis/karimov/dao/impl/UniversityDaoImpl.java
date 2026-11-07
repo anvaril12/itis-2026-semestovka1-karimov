@@ -89,6 +89,7 @@ public class UniversityDaoImpl implements UniversityDao {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE)) {
             preparedStatement.setString(1, universityEntity.getName());
             preparedStatement.setString(2, universityEntity.getCity());
+            preparedStatement.setInt(3, universityEntity.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             if("23505".equals(e.getSQLState())) {

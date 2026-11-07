@@ -8,6 +8,7 @@ import ru.itis.karimov.exception.NotFoundException;
 import ru.itis.karimov.exception.ValidationException;
 import ru.itis.karimov.service.DormReviewService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -95,20 +96,20 @@ public class DormReviewServiceImpl implements DormReviewService {
     }
 
     private void validateDormReview(DormReviewEntity dormReviewEntity) {
-        if(dormReviewEntity.getText() == null || dormReviewEntity.getRating() == null) {
-            throw new ValidationException(Map.of("review", "Введите текст и рейтинг"));
+        Map<String, String> errors = new HashMap<>();
+        String text = dormReviewEntity.getText();
+        if (text == null || text.isBlank()) {
+            errors.put("text", "Текст отзыва не должен быть пустым");
+        } else if (text.trim().length() > 1000) {
+            errors.put("text", "Текст отзыва должен быть не больше 1000 символов");
         }
 
-        if(dormReviewEntity.getText().isBlank()) {
-            throw new ValidationException(Map.of("text", "Текст отзыва не должен быть пустым"));
+        Integer rating = dormReviewEntity.getRating();
+        if (rating == null || rating < 1 || rating > 5) {
+            errors.put("rating", "Выберите оценку от 1 до 5");
         }
-
-        if(dormReviewEntity.getText().trim().length() > 1000) {
-            throw new ValidationException(Map.of("text", "Текст отзыва должен быть не больше 1000 символов"));
-        }
-
-        if(dormReviewEntity.getRating() > 5 || dormReviewEntity.getRating() < 1) {
-            throw new ValidationException(Map.of("rating", "Рейтинг должен быть от 1 до 5"));
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
         }
     }
 }

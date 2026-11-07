@@ -13,6 +13,8 @@ import ru.itis.karimov.exception.NotFoundException;
 import ru.itis.karimov.exception.ValidationException;
 import ru.itis.karimov.service.UserService;
 import ru.itis.karimov.validation.RegistrationValidator;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
 
@@ -61,6 +63,10 @@ public class UserServiceImpl implements UserService {
 
         if(login == null || login.isBlank() || password == null || password.isBlank()) {
             throw new AuthenticationException(message);
+        }
+
+        if(password.getBytes(StandardCharsets.UTF_8).length > 72) {
+            throw new AuthenticationException("Неверный логин или пароль");
         }
 
         Optional<UserEntity> optionalUser = userDao.findByLogin(login);

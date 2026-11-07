@@ -58,11 +58,11 @@ public class AppContextListener implements ServletContextListener {
         QuestionnaireService questionnaireService = new QuestionnaireServiceImpl(questionDao, answerOptionDao, userAnswerDao);
         CompatibilityService compatibilityService = new CompatibilityServiceImpl(userDao, userAnswerDao);
         RoommateRequestService roommateRequestService = new RoommateRequestServiceImpl(userDao,roommateRequestDao);
-        RoomService roomService = new RoomServiceImpl(roomDao, userDao);
+        RoomService roomService = new RoomServiceImpl(roomDao, userDao, roomMemberDao);
         RoomMemberService roomMemberService = new RoomMemberServiceImpl(roomDao, roomMemberDao, userDao, userAnswerDao, compatibilityService);
         QuestionAdminService questionAdminService = new QuestionAdminServiceImpl(questionDao);
         UniversityAdminService universityAdminService = new UniversityAdminServiceImpl(universityDao, dormitoryDao);
-        DormitoryAdminService dormitoryAdminService = new DormitoryAdminServiceImpl(dormitoryDao, roomDao, userDao, universityDao);
+        DormitoryAdminService dormitoryAdminService = new DormitoryAdminServiceImpl(dormitoryDao, roomDao, userDao, universityDao, dormReviewDao);
         DormReviewService dormReviewService = new DormReviewServiceImpl(dormReviewDao, dormitoryDao);
         ComplaintService complaintService = new ComplaintServiceImpl(complaintDao, userDao);
         ComplaintAdminService complaintAdminService = new ComplaintAdminServiceImpl(complaintDao);

@@ -20,7 +20,7 @@ public class DormitoryDaoImpl implements DormitoryDao {
     private static final String SQL_FIND_BY_UNIVERSITY_ID = "select id, university_id, name, address from dormitories where university_id = ? order by name";
     private static final String SQL_FIND_ALL = "select * from dormitories order by name";
     private static final String SQL_DELETE = "delete from dormitories where id = ?";
-    private static final String SQL_UPDATE = "update dormitories set name = ?, address = ? where id = ?";
+    private static final String SQL_UPDATE = "update dormitories set name = ?, address = ?, university_id = ? where id = ?";
     private static final String SQL_SAVE = "insert into dormitories(university_id, name, address) values(?, ?, ?) returning id";
 
     private final DataSource dataSource;
@@ -107,7 +107,8 @@ public class DormitoryDaoImpl implements DormitoryDao {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE)) {
             preparedStatement.setString(1, dormitoryEntity.getName());
             preparedStatement.setString(2, dormitoryEntity.getAddress());
-            preparedStatement.setInt(3, dormitoryEntity.getId());
+            preparedStatement.setInt(3, dormitoryEntity.getUniversityId());
+            preparedStatement.setInt(4, dormitoryEntity.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Не удалось обновить общежитие по id: " + dormitoryEntity.getId(), e);
