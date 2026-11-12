@@ -1,4 +1,4 @@
-package ru.itis.karimov.service.impl;
+package ru.itis.karimov.service.impl.admin;
 
 import ru.itis.karimov.dao.DormitoryDao;
 import ru.itis.karimov.dao.UniversityDao;

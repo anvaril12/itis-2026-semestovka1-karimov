@@ -75,7 +75,7 @@ public class CompatibilityServiceImpl implements CompatibilityService {
                 continue;
             }
             Integer percent = calculate(answerEntities, userAnswerDao.findByUserId(candidate.getId()));
-            if(percent == null) {
+            if (percent == null) {
                 continue;
             }
             result.add(new MatchView(candidate, percent));

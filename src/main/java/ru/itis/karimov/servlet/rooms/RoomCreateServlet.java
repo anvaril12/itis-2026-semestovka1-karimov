@@ -1,4 +1,4 @@
-package ru.itis.karimov.servlet;
+package ru.itis.karimov.servlet.rooms;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

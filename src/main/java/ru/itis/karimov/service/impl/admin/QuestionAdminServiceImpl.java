@@ -1,4 +1,4 @@
-package ru.itis.karimov.service.impl;
+package ru.itis.karimov.service.impl.admin;
 
 import ru.itis.karimov.dao.QuestionDao;
 import ru.itis.karimov.entity.AnswerOptionEntity;

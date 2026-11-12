@@ -16,6 +16,7 @@ import ru.itis.karimov.dao.*;
 import ru.itis.karimov.dao.impl.*;
 import ru.itis.karimov.service.*;
 import ru.itis.karimov.service.impl.*;
+import ru.itis.karimov.service.impl.admin.*;
 
 import java.io.IOException;
 import java.io.InputStream;
